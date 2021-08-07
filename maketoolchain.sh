@@ -197,19 +197,6 @@ if [[ $skip_stage -eq 0 ]]; then
     mkdir -p $OBJ/gcc1
     cd $OBJ/gcc1
 
-#    $SRC/$gccv/configure \
-#	--target=$TARGET \
-#	--prefix=$TOOLS \
-#	--without-headers --with-newlib \
-#	--disable-shared --disable-threads --disable-libssp \
-#	--disable-libgomp --disable-libmudflap \
-#	--disable-libatomic \
-#	--enable-languages=c --without-docdir --without-pdfdir \
-#	--without-htmldir --verbose &> $TOP/config_gcc1.log
-
-
-
-# BERTO. Can we do the -without-docdir and stuff?
     $SRC/$gccv/configure \
 	--target=$TARGET \
 	--prefix=$TOOLS \
