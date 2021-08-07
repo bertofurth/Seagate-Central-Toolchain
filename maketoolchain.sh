@@ -15,7 +15,7 @@ gccv=gcc-11.2.0
 # Number of threads to engage during build process
 # Set to less than or equal the number of available
 # CPU cores. Use J=1 for troubleshooting
-J=1
+J=8
 
 # These parameters are used by glibc. "build" is the
 # type of machine we are running this build process on.
