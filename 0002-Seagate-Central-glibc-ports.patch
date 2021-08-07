@@ -1,0 +1,53 @@
+diff -ruN glibc-ports-2.11-2010q1-mvl6.orig/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c glibc-ports-2.11-2010q1-mvl6/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c
+--- glibc-ports-2.11-2010q1-mvl6.orig/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c	2021-08-07 11:43:09.566090932 +1000
++++ glibc-ports-2.11-2010q1-mvl6/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c	2021-08-07 14:54:28.923323832 +1000
+@@ -23,7 +23,8 @@
+ #include <pthreadP.h>
+ 
+ static void *libgcc_s_handle;
+-static void (*libgcc_s_resume) (struct _Unwind_Exception *exc);
++static void (*libgcc_s_resume) (struct _Unwind_Exception *exc)
++    __attribute__((used));
+ static _Unwind_Reason_Code (*libgcc_s_personality)
+   (_Unwind_State, struct _Unwind_Exception *, struct _Unwind_Context *);
+ static _Unwind_Reason_Code (*libgcc_s_forcedunwind)
+diff -ruN glibc-ports-2.11-2010q1-mvl6.orig/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-resume.c glibc-ports-2.11-2010q1-mvl6/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-resume.c
+--- glibc-ports-2.11-2010q1-mvl6.orig/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-resume.c	2021-08-07 11:43:09.566090932 +1000
++++ glibc-ports-2.11-2010q1-mvl6/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-resume.c	2021-08-07 14:54:50.723470945 +1000
+@@ -21,7 +21,9 @@
+ #include <stdio.h>
+ #include <unwind.h>
+ 
+-static void (*libgcc_s_resume) (struct _Unwind_Exception *exc);
++
++static void (*libgcc_s_resume) (struct _Unwind_Exception *exc)
++    __attribute__((used));
+ static _Unwind_Reason_Code (*libgcc_s_personality)
+   (_Unwind_State, struct _Unwind_Exception *, struct _Unwind_Context *);
+ 
+diff -ruN glibc-ports-2.11-2010q1-mvl6.orig/sysdeps/unix/sysv/linux/arm/nptl/unwind-forcedunwind.c glibc-ports-2.11-2010q1-mvl6/sysdeps/unix/sysv/linux/arm/nptl/unwind-forcedunwind.c
+--- glibc-ports-2.11-2010q1-mvl6.orig/sysdeps/unix/sysv/linux/arm/nptl/unwind-forcedunwind.c	2021-08-07 11:43:09.566090932 +1000
++++ glibc-ports-2.11-2010q1-mvl6/sysdeps/unix/sysv/linux/arm/nptl/unwind-forcedunwind.c	2021-08-07 14:55:08.195588854 +1000
+@@ -23,7 +23,8 @@
+ #include <pthreadP.h>
+ 
+ static void *libgcc_s_handle;
+-static void (*libgcc_s_resume) (struct _Unwind_Exception *exc);
++static void (*libgcc_s_resume) (struct _Unwind_Exception *exc)
++    __attribute_used__;
+ static _Unwind_Reason_Code (*libgcc_s_personality)
+   (int, _Unwind_Action, _Unwind_Exception_Class, struct _Unwind_Exception *,
+    struct _Unwind_Context *);
+diff -ruN glibc-ports-2.11-2010q1-mvl6.orig/sysdeps/unix/sysv/linux/arm/nptl/unwind-resume.c glibc-ports-2.11-2010q1-mvl6/sysdeps/unix/sysv/linux/arm/nptl/unwind-resume.c
+--- glibc-ports-2.11-2010q1-mvl6.orig/sysdeps/unix/sysv/linux/arm/nptl/unwind-resume.c	2021-08-07 11:43:09.566090932 +1000
++++ glibc-ports-2.11-2010q1-mvl6/sysdeps/unix/sysv/linux/arm/nptl/unwind-resume.c	2021-08-07 14:55:53.643895554 +1000
+@@ -21,7 +21,8 @@
+ #include <stdio.h>
+ #include <unwind.h>
+ 
+-static void (*libgcc_s_resume) (struct _Unwind_Exception *exc);
++static void (*libgcc_s_resume) (struct _Unwind_Exception *exc)
++    __attribute_used__;
+ static _Unwind_Reason_Code (*libgcc_s_personality)
+   (int, _Unwind_Action, _Unwind_Exception_Class, struct _Unwind_Exception *,
+    struct _Unwind_Context *);
