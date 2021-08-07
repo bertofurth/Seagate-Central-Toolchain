@@ -12,9 +12,9 @@ gcc amd make.
 This procedure has been tested to work on the following building
 platforms
 
-OpenSUSE Tumbleweed (Aug 2021) on x86  gcc v11.1 make 4.3
-OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  gcc v11.1 make 4.3
-Debian 10 (Buster) on x86  gcc 8.3.0 make 4.2.1
+* OpenSUSE Tumbleweed (Aug 2021) on x86  gcc v11.1 make 4.3
+* OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  gcc v11.1 make 4.3
+* Debian 10 (Buster) on x86  gcc 8.3.0 make 4.2.1
 
 ## Prerequisites
 This procedure will take up to a maximum of about 3.5GiB of disk space
@@ -24,25 +24,25 @@ product.
 The following packages or their equivalents need to be installed on
 a "fresh" OpenSUSE Tumbleweed system to perform the build
 
-zypper install -t pattern devel_basis
-gcc-c++
-unzip
-lbzip2
-bzip2
-libtirpc-devel
+* zypper install -t pattern devel_basis
+* gcc-c++
+* unzip
+* lbzip2
+* bzip2
+* libtirpc-devel
 
 The following packages or their equivalents need to be installed on 
 a "fresh" Debian 10 (Buster) system to perform the build
 
-build-essential
-unzip
-curl
-gawk
+* build-essential
+* unzip
+* curl
+* gawk
 
 
 ## The procedure
 Download the files in this project to a spare directory. This will
-be referred to as the base workspace directory going forward.
+be referred to as the base working directory going forward.
 
 The next part of the procedure involves gathering the source
 code for each component and installing it into the **src** 
@@ -180,9 +180,19 @@ The vast majority of problems will be due to
 * A needed build system component not being installed.
 * The build system running out of disk space.
 
-Make sure that all of the components listed in the prerequisites
-section are installed and that there is enough disk space
-to complete the procedure.
+Therefore, make sure that all of the components listed in the
+prerequisites section are installed and that there is enough disk
+space to complete the procedure.
 
+It may be necessary to restart the build process if significant
+changes are made to the maketoolchain.sh script or if new
+system components are installed.
+
+Other than that, check the log files referred to in the 
+script output when problems occur. It may be easier to read the
+log files if **J=1** is set in the maketoolchain.sh script. This
+way only one build thread will be active and any errors will cause
+the build to terminate straight away instead of having to wait
+for other threads to finish.
 
 
