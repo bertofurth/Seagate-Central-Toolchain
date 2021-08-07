@@ -2,8 +2,8 @@ Copy the archives of the source code needed for the
 compilation process to this src directory and extract
 the archives.
 
-An example list of contents for the src archive might
-be as follows.
+An example list of contents for this src directory 
+might be as follows.
 
     $ ls -1F
     binutils-2.37/
