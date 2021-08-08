@@ -7,16 +7,12 @@
 # argument number to begin the process at a stage other
 # than the start.
 
-<<<<<<< HEAD
 # Set the names of the gcc and binutils source
 # directories
 binutilsv=binutils-2.37
 gccv=gcc-11.2.0
 
 # Number of threads to engage during build process.
-=======
-# Number of threads to engage during build process
->>>>>>> 8bc334f62dc84dd0fda0f974cb37ee06ae43049c
 # Set to less than or equal the number of available
 # CPU cores. Use J=1 for troubleshooting
 J=6
@@ -40,14 +36,9 @@ host=$build
 # disk space consumed by the build.
 CLEAN_OLD_OBJ=1
 
-<<<<<<< HEAD
 # The cross compiler target name and prefix.
 # (N.B. No dash - at the end)
 export TARGET=arm-sc-linux-gnueabi
-=======
-# The cross compiler prefix (No dash at the end)
-export TARGET=arm-vz-linux-gnueabi
->>>>>>> 8bc334f62dc84dd0fda0f974cb37ee06ae43049c
 
 
 # ************************************************
