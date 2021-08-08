@@ -59,15 +59,13 @@ exists.
     mkdir -p src
 
 Obtain the Seagate Central GPL source code archive available from 
-Seagate's webite. This file contains the open source components
+Seagate's webite using a tool like **wget** or **curl -O**, then
+unzip the archive. This file contains the open source components 
 that go into making the software on the Seagate Central.
 
     curl -O https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip
-
-Unzip the file.
-
     unzip seagate-central-firmware-gpl-source-code.zip
-
+    
 We need to copy the Seagate Central glibc, glibc-ports and linux 
 source code to the src subdirectory of the base working directory. 
 Note the linux source code has quite an unintuitive name so I suggest
@@ -131,11 +129,6 @@ base working directory to set some parameters to guide the build process
 Working our way from the top of the script the following parameters need to
 be set and checked. The comments in the script explain the meanings of each
 parameter. If in doubt just leave as they are.
-
-    # Set the names of the gcc and binutils source
-    # directories
-    binutilsv=binutils-2.37
-    gccv=gcc-11.2.0
 
     # Number of threads to engage during build process.
     # Set to less than or equal the number of available
