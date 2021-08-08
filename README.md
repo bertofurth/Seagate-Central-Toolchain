@@ -45,7 +45,7 @@ a "fresh" Debian 10 (Buster) system to perform the build
 * curl
 * gawk
 
-## The procedure
+## Procedure
 ### Preparation and source code download
 Download the files in this project to a new directory on your
 build machine. This will be referred to as the base working 
