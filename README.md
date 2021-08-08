@@ -23,8 +23,8 @@ during the build process and will generate about 1.2GiB of finished
 product. 
 
 ### Time
-It takes about 1 hour to complete on an 8 core i7 PC. It takes about
-6 hours on a Raspberry Pi 4B.
+The build components take a total of about 45 minutes to complete on an 
+8 core i7 PC. It takes about 6.5 hours on a Raspberry Pi 4B.
 
 ### Required tools
 The following packages or their equivalents need to be installed on
@@ -75,8 +75,12 @@ you rename it during the copy process as seen below.
     cp sources/LGPL/glibc/glibc.tar.bz2 ./src
     cp sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz ./src/linux.tar.gz
     
-We don't need anything else from this zip file so it may be deleted to
-save disk space at this point.
+We don't need anything else from this zip file so it and its 
+contents may be deleted to save disk space at this point. This step 
+is optional.
+
+    rm -rf sources __MACOSX Cirrus\ Package\ Licenses.docx
+    rm seagate-central-firmware-gpl-source-code.zip
 
 Change to the src directory and extract the archives just copied into
 it. Linux gets extracted to a directory called "git" but we must 
@@ -98,17 +102,14 @@ included in this project and can be applied from the src directory as follows.
     patch -p0 < ../0001-Seagate-Central-glibc-2.11.patch
     patch -p0 < ../0002-Seagate-Central-glibc-ports.patch
     
-Download and extract binutils to the src directory. In this example 
-we use the latest stable version at the time of writing, 2.37.
+Download and extract binutils and gcc to the src directory. In this example 
+we use the latest stable versions at the time of writing, binutils-2.37 and
+gcc-11.2.0.
     
     curl -O http://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.bz2
     tar -xf binutils-2.37.tar.bz2
-
-Download and extract a version of gcc to compile. In this example we use the
-latest stable version at the time of writing, 11.2.0.
-
-     curl -O http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
-     tar -xf gcc-11.2.0.tar.xz
+    curl -O http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
+    tar -xf gcc-11.2.0.tar.xz
      
 GCC needs some extra components installed inside it's source tree in order
 to be compiled. These can be automatically downloaded by running a script
@@ -133,14 +134,19 @@ parameter. If in doubt just leave as they are.
     # Number of threads to engage during build process.
     # Set to less than or equal the number of available
     # CPU cores. Use J=1 for troubleshooting
-    J=8
-
+    J=6
+    
     # These parameters are used by glibc. "build" is the
     # type of machine we are running this build process on.
     # "host" is the type of machine the generated tools will
-    # run on. They are generally the same. Typical values are
-    # i686-pc-linux-gnu for PCs or arm-linux-gnu for Raspberry
-    # Pi.
+    # run on. They are generally the same. Note that this
+    # is different to "TARGET" which is the platform
+    # the resultant cross compiler will generate binaries
+    # for (i.e. the Seagate Central)
+    #
+    # Typical values are i686-pc-linux-gnu for PCs or
+    # arm-linux-gnu for Raspberry Pi.
+    #
     build=i686-pc-linux-gnu
     host=$build
     
@@ -148,9 +154,11 @@ parameter. If in doubt just leave as they are.
     # stage finishes set to 0. This adds about 4.5GiB to the
     # disk space consumed by the build.
     CLEAN_OLD_OBJ=1
+    
+    # The cross compiler target name and prefix.
+    # (N.B. No dash - at the end)
+    export TARGET=arm-sc-linux-gnueabi
 
-    # The prefix for the generated cross compilation tools.
-    export TARGET=arm-vz-linux-gnueabi
 
 ## Building
 Once all the parameters have been set and the maketoolchain.sh
