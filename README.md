@@ -42,8 +42,8 @@ a "fresh" Debian 10 (Buster) system to perform the build (apt-get install ... )
 
 * build-essential
 * unzip
-* curl
 * gawk
+* curl (or use wget)
 
 ## Procedure
 ### Preparation and source code download
