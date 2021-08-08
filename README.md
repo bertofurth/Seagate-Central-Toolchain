@@ -130,11 +130,6 @@ Working our way from the top of the script the following parameters need to
 be set and checked. The comments in the script explain the meanings of each
 parameter. If in doubt just leave as they are.
 
-    # Set the names of the gcc and binutils source
-    # directories
-    binutilsv=binutils-2.37
-    gccv=gcc-11.2.0
-
     # Number of threads to engage during build process.
     # Set to less than or equal the number of available
     # CPU cores. Use J=1 for troubleshooting
