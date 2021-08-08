@@ -59,8 +59,9 @@ exists.
     mkdir -p src
 
 Obtain the Seagate Central GPL source code archive available from 
-Seagate's webite. This file contains the open source components
-that go into making the software on the Seagate Central.
+Seagate's webite using a tool like **wget** or **curl -O**. This 
+file contains the open source components that go into making the 
+software on the Seagate Central.
 
     curl -O https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip
 
