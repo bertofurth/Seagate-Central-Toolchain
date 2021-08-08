@@ -28,7 +28,7 @@ The build components take a total of about 45 minutes to complete on an
 
 ### Required tools
 The following packages or their equivalents need to be installed on
-a "fresh" OpenSUSE Tumbleweed system to perform the build
+a "fresh" OpenSUSE Tumbleweed system to perform the build (zypper add ... )
 
 * zypper install -t pattern devel_basis
 * gcc-c++
@@ -38,7 +38,7 @@ a "fresh" OpenSUSE Tumbleweed system to perform the build
 * libtirpc-devel
 
 The following packages or their equivalents need to be installed on 
-a "fresh" Debian 10 (Buster) system to perform the build
+a "fresh" Debian 10 (Buster) system to perform the build (apt-get install ... )
 
 * build-essential
 * unzip
