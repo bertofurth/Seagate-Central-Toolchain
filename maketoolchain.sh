@@ -7,12 +7,16 @@
 # argument number to begin the process at a stage other
 # than the start.
 
+<<<<<<< HEAD
 # Set the names of the gcc and binutils source
 # directories
 binutilsv=binutils-2.37
 gccv=gcc-11.2.0
 
 # Number of threads to engage during build process.
+=======
+# Number of threads to engage during build process
+>>>>>>> 8bc334f62dc84dd0fda0f974cb37ee06ae43049c
 # Set to less than or equal the number of available
 # CPU cores. Use J=1 for troubleshooting
 J=6
@@ -36,9 +40,14 @@ host=$build
 # disk space consumed by the build.
 CLEAN_OLD_OBJ=1
 
+<<<<<<< HEAD
 # The cross compiler target name and prefix.
 # (N.B. No dash - at the end)
 export TARGET=arm-sc-linux-gnueabi
+=======
+# The cross compiler prefix (No dash at the end)
+export TARGET=arm-vz-linux-gnueabi
+>>>>>>> 8bc334f62dc84dd0fda0f974cb37ee06ae43049c
 
 
 # ************************************************
@@ -174,15 +183,31 @@ new_stage()
     fi
 }
 mkdir -p $SRC
-new_stage "binutils"
+cd $SRC
+
+# By default we automatically find the latest versions of
+# binutils and gcc in the $SRC directory. Alternatively
+# manually set the versions here.
+
+binutilsv=$(ls -1drv binutils*/ | cut -f1 -d'/' | head -1)
+#binutilsv=binutils-2.xx
+gccv=$(ls -1drv gcc*/ | cut -f1 -d'/' | head -1)
+#gccv=gcc-11.x.x
+
+new_stage "binutils ($binutilsv)" 
 if [[ $skip_stage -eq 0 ]]; then
     ### BINUTILS
-    cd $SRC
+    if [ -z $binutilsv ]; then
+	echo Unable to find any binutils folders. Make sure
+	echo to extract the archive into the $SRC directory
+	echo or manually set the location
+	exit -1
+    fi
+    
     if [ ! -d $binutilsv ]; then
     echo "Please copy $binutilsv to $SRC/$binutilsv"
     exit 1
     fi
-
     mkdir -p $OBJ/binutils
     cd $OBJ/binutils
 
@@ -198,9 +223,17 @@ if [[ $skip_stage -eq 0 ]]; then
     clean_obj "$OBJ/binutils"
 fi
 
-new_stage "1st GCC"
+
+new_stage "1st GCC ($gccv)"
 if [[ $skip_stage -eq 0 ]]; then
     ### THE FIRST GCC
+
+    if [ -z $gccv ]; then
+	echo Unable to find any gcc folders. Make sure
+	echo to extract the archive into the $SRC directory
+	echo or manually set the location
+	exit -1
+    fi
     mkdir -p $OBJ/gcc1
     cd $OBJ/gcc1
 
@@ -282,7 +315,7 @@ if [[ $skip_stage -eq 0 ]]; then
     clean_obj "$OBJ/eglibc-headers"
 fi
 
-new_stage "2nd GCC"
+new_stage "2nd GCC ($gccv)"
 if [[ $skip_stage -eq 0 ]]; then
     ### The Second GCC
     mkdir -p $OBJ/gcc2
@@ -341,7 +374,7 @@ if [[ $skip_stage -eq 0 ]]; then
     clean_obj "$OBJ/eglibc"
 fi
 
-new_stage "3rd (final) GCC"
+new_stage "3rd (final) GCC ($gccv)"
 if [[ $skip_stage -eq 0 ]]; then
     ### The Third GCC
     mkdir -p $OBJ/gcc3
