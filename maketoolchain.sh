@@ -12,17 +12,21 @@
 binutilsv=binutils-2.37
 gccv=gcc-11.2.0
 
-# Number of threads to engage during build process
+# Number of threads to engage during build process.
 # Set to less than or equal the number of available
 # CPU cores. Use J=1 for troubleshooting
-J=8
+J=6
 
 # These parameters are used by glibc. "build" is the
 # type of machine we are running this build process on.
 # "host" is the type of machine the generated tools will
-# run on. They are generally the same. Typical values are
-# i686-pc-linux-gnu for PCs or arm-linux-gnu for Raspberry
-# Pi.
+# run on. They are generally the same. Note that this
+# is different to "TARGET" which is the platform
+# the resultant cross compiler will generate binaries
+# for (i.e. the Seagate Central)
+#
+# Typical values are i686-pc-linux-gnu for PCs or
+# arm-linux-gnu for Raspberry Pi.
 # 
 build=i686-pc-linux-gnu
 host=$build
@@ -32,13 +36,16 @@ host=$build
 # disk space consumed by the build.
 CLEAN_OLD_OBJ=1
 
-# The cross compiler prefix
-export TARGET=arm-vz-linux-gnueabi
+# The cross compiler target name and prefix.
+# (N.B. No dash - at the end)
+export TARGET=arm-sc-linux-gnueabi
 
 
-#
+# ************************************************
+# ************************************************
 # Nothing below here should need to be modified.
-#
+# ************************************************
+# ************************************************
 
 linux_arch=arm
 export ARCH=arm
