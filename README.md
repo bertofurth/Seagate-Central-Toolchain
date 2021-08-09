@@ -27,9 +27,9 @@ The build components take a total of about 45 minutes to complete on an
 8 core i7 PC. It takes about 6.5 hours on a Raspberry Pi 4B.
 
 ### Required tools
-The following packages or their equivalents need to be installed on
-a "fresh" OpenSUSE Tumbleweed system to perform the build (zypper add ... )
+The following packages or their equivalents may need to be installed.
 
+#### OpenSUSE Tumbleweed - Aug 2021 (zypper add ...)
 * zypper install -t pattern devel_basis
 * gcc-c++
 * unzip
@@ -37,9 +37,7 @@ a "fresh" OpenSUSE Tumbleweed system to perform the build (zypper add ... )
 * bzip2
 * libtirpc-devel
 
-The following packages or their equivalents need to be installed on 
-a "fresh" Debian 10 (Buster) system to perform the build (apt-get install ... )
-
+#### Debian 10 - Buster (apt-get install ...)
 * build-essential
 * unzip
 * gawk
