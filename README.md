@@ -16,6 +16,11 @@ platforms
 * OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  gcc v11.1 make 4.3
 * Debian 10 (Buster) on x86  gcc 8.3.0 make 4.2.1
 
+The procedure and scripts have been tested to work building the 
+following versions of GCC
+
+* 11.2.0
+
 ## Prerequisites
 ### Disk space
 This procedure will take up to a maximum of about 3.5GiB of disk space
@@ -105,8 +110,8 @@ we use the latest stable versions at the time of writing, binutils-2.37 and
 gcc-11.2.0.
     
     curl -O http://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.bz2
-    tar -xf binutils-2.37.tar.bz2
     curl -O http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
+    tar -xf binutils-2.37.tar.bz2
     tar -xf gcc-11.2.0.tar.xz
      
 GCC needs some extra components installed inside it's source tree in order
