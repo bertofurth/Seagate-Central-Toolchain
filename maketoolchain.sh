@@ -8,7 +8,7 @@
 # than the start.
 
 # Set the names of the gcc and binutils source
-# directories
+# sub-directories.
 binutilsv=binutils-2.37
 gccv=gcc-11.2.0
 
