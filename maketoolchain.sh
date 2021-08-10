@@ -7,11 +7,6 @@
 # argument number to begin the process at a stage other
 # than the start.
 
-# Set the names of the gcc and binutils source
-# directories
-binutilsv=binutils-2.37
-gccv=gcc-11.2.0
-
 # Number of threads to engage during build process.
 # Set to less than or equal the number of available
 # CPU cores. Use J=1 for troubleshooting
@@ -37,7 +32,7 @@ host=$build
 CLEAN_OLD_OBJ=1
 
 # The cross compiler target name and prefix.
-# (N.B. No dash - at the end)
+# N.B. No dash - at the end.
 export TARGET=arm-sc-linux-gnueabi
 
 
@@ -77,9 +72,20 @@ mkdir -p $TOOLS
 mkdir -p $SYSROOT
 
 ZIPSRC=seagate-central-firmware-gpl-source-code.zip
+
+# Set the names of the gcc and binutils source
+# sub directory. Just using "binutils" and "gcc"
+# will automatically search for the latest versions
+# of these tools.
+binutilsv=binutils
+gccv=gcc
+
+gccv=$(basename $(ls -1drv $SRC/$gccv*/))
+binutilsv=$(basename $(ls -1drv $SRC/$binutilsv*/))
+
 if [ ! -d $SRC/$gccv ]; then
-    echo "Please copy $gccv to $SRC/$gccv"
-    echo "$gccv is included in GPL/gcc/gcc.tar in $ZIPSRC"
+    echo "Unable to find gcc. Please have gcc source installed"
+    echo "in the $SRC/gcc-X.X.X directory"
     exit 1
 fi
 
@@ -175,15 +181,6 @@ new_stage()
 }
 mkdir -p $SRC
 cd $SRC
-
-# By default we automatically find the latest versions of
-# binutils and gcc in the $SRC directory. Alternatively
-# manually set the versions here.
-
-binutilsv=$(ls -1drv binutils*/ | cut -f1 -d'/' | head -1)
-#binutilsv=binutils-2.xx
-gccv=$(ls -1drv gcc*/ | cut -f1 -d'/' | head -1)
-#gccv=gcc-11.x.x
 
 new_stage "binutils ($binutilsv)" 
 if [[ $skip_stage -eq 0 ]]; then
