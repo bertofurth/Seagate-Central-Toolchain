@@ -211,6 +211,6 @@ script starting at stage 4 with the following command.
     ./maketoolchain.sh 4
 
 If significant changes are made to the maketoolchain.sh script
-of if new system components are installed it may be necessary
+or if new system components are installed it may be necessary
 to restart the build process afresh. Do this by deleting the
-**cross** and **obj** subdirectories and starting again. 
+**cross** subdirectory and starting again. 
