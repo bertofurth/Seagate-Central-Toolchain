@@ -2,12 +2,14 @@
 Generate a toolchain to cross compile binaries for the Seagate 
 Central NAS.
 
-This project takes the work done at 
+This project is based on 
 
 https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain
 
-and tweaks it slightly to work with contemporary versions of 
-gcc and make.
+which builds a Seagate Central toolchain based on gcc 4.4.x. In
+contrast, this project works with contemporary versions of gcc to
+build a toolchain based on contempory versions of gcc (5.x.x and
+above).
 
 This procedure has been tested to work on the following build
 platforms
@@ -16,7 +18,7 @@ platforms
 * OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  gcc 11.1.0 make 4.3
 * Debian 10 (Buster) on x86  gcc 8.3.0 make 4.2.1
 
-The procedure has been tested to build the following versions of
+The procedure has been tested building the following versions of
 GCC in conjunction with binutils-2.37
 
 * 11.2.0
@@ -26,6 +28,10 @@ GCC in conjunction with binutils-2.37
 * 7.5.0
 * 6.5.0 (See Troubleshooting section)
 * 5.5.0 (See Troubleshooting section)
+* 4.9.4 (Failed - use the mauro-dellachiesa project linked above)
+
+In general, it is suggested to generate a toolchain based on the latest
+stable version of gcc and binutils.
 
 ## Prerequisites
 ### Disk space
@@ -203,28 +209,7 @@ gcc source code sub directory.
      checking for the correct version of mpfr.h... no
      configure: error: Building GCC requires GMP 4.2+, MPFR 3.1.0+ and MPC 0.8.0+.
 
-When building gcc version 6.x.x a small patch must be applied
-as follows to gcc from the src directory.
-
-     patch -p0 < ../0099-gcc-6.5.0.patch
-     
-If this patch is not applied then the following error may appear
-in the logs during the build stage
-
-BERTO INSERT ERROR
-
-When building gcc versions 5.x.x and below using gcc version 11.x.x 
-and above the following line in the maketoolchain.sh script
-must be uncommented.
-
-     #export CXXFLAGS="-std=gnu++14"
-
-If this modification is not made then the following error may
-appear in the logs during the build stage
-
-BERTO INSERT ERROR
-
-After fixing problems the process can be resumed by rerunning
+After fixing any problems the process can be resumed by rerunning
 the build script with an argument referring to the stage number
 you'd like to start with. For example, if during stage 4 a 
 problem is discovered but then corrected, one could re-run the
@@ -236,3 +221,34 @@ If significant changes are made to the maketoolchain.sh script
 or if new system components are installed it may be necessary
 to restart the build process afresh. Do this by deleting the
 **cross** subdirectory and starting again. 
+
+### gcc 6.x.x
+When building gcc version 6.x.x a small patch must be applied
+as follows to gcc from the src directory.
+
+     patch -p0 < ../0099-gcc-6.5.0.patch
+     
+If this patch is not applied then the following error may appear
+in the make_gcc3.log during the make 3rd (final) GCC build stage
+
+    ..../src/gcc-6.5.0/libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc:332:44: error: ‘ARM_VFPREGS_SIZE’ was
+not declared in this scope
+
+### gcc 5.x.x
+When building gcc versions 5.x.x while using gcc version 11.x.x
+and above the following line in the maketoolchain.sh script must be
+uncommented.
+
+     #export CXXFLAGS="-std=gnu++14"
+
+If this modification is not made then an error similar to the
+following may appear in the logs during the make 1st GCC
+build stage
+
+    ..../src/gcc-5.5.0/gcc/reload1.c: In function ‘void init_reload()’:
+    ..../src/gcc-5.5.0/gcc/reload1.c:115:24: error: use of an operand of type ‘bool’ in ‘operator++’ is forbidden in C++17
+
+Many warnings similar to the following may also appear
+
+     warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+     
