@@ -209,22 +209,24 @@ as follows to gcc from the src directory.
      patch -p0 < ../0099-gcc-6.5.0.patch
      
 If this patch is not applied then the following error may appear
-in the logs during the build stage
+in the make_gcc3.log during the make 3rd (final) GCC build stage
 
-BERTO INSERT ERROR
+    ..../src/gcc-6.5.0/libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc:332:44: error: ‘ARM_VFPREGS_SIZE’ was
+not declared in this scope
 
-When building gcc versions 5.x.x and below using gcc version 11.x.x 
-and above the following line in the maketoolchain.sh script
-must be uncommented.
+When building gcc versions 5.x.x using gcc version 11.x.x and
+above the following line in the maketoolchain.sh script must be
+uncommented.
 
      #export CXXFLAGS="-std=gnu++14"
 
 If this modification is not made then the following error may
-appear in the logs during the build stage
+appear in the logs during the make 1st GCC build stage
 
-BERTO INSERT ERROR
+    ..../src/gcc-5.5.0/gcc/reload1.c: In function ‘void init_reload()’:
+    ..../src/gcc-5.5.0/gcc/reload1.c:115:24: error: use of an operand of type ‘bool’ in ‘operator++’ is forbidden in C++17
 
-After fixing problems the process can be resumed by rerunning
+After fixing any problems the process can be resumed by rerunning
 the build script with an argument referring to the stage number
 you'd like to start with. For example, if during stage 4 a 
 problem is discovered but then corrected, one could re-run the
