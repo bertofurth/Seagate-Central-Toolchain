@@ -7,19 +7,24 @@ This project takes the work done at
 https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain
 
 and tweaks it slightly to work with contemporary versions of 
-gcc amd make.
+gcc and make.
 
-This procedure has been tested to work on the following building
+This procedure has been tested to work on the following build
 platforms
 
 * OpenSUSE Tumbleweed (Aug 2021) on x86  gcc v11.1 make 4.3
 * OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  gcc v11.1 make 4.3
 * Debian 10 (Buster) on x86  gcc 8.3.0 make 4.2.1
 
-The procedure and scripts have been tested to work building the 
-following versions of GCC
+The procedure has been tested to build the following versions of
+GCC in conjunction with binutils-2.37
 
 * 11.2.0
+* 10.3.0
+* 9.4.0
+* 8.5.0
+* 7.5.0
+* 6.5.0
 
 ## Prerequisites
 ### Disk space
@@ -61,29 +66,26 @@ exists.
 
     mkdir -p src
 
-Obtain the Seagate Central GPL source code archive available from 
-Seagate's webite using a tool like **wget** or **curl -O**, then
+Download the Seagate Central GPL source code archive from 
+Seagate's website using a tool like **wget** or **curl -O**, then
 unzip the archive. This file contains the open source components 
 that go into making the software on the Seagate Central.
 
     curl -O https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip
     unzip seagate-central-firmware-gpl-source-code.zip
     
-We need to copy the Seagate Central glibc, glibc-ports and linux 
-source code to the src subdirectory of the base working directory. 
-Note the linux source code has quite an unintuitive name so I suggest
-you rename it during the copy process as seen below.
+We need to copy the Seagate Central version of glibc, glibc-ports
+and linux source code to the src subdirectory of the base working
+directory. Note the linux source code has quite an unintuitive 
+name so I suggest you rename it during the copy process as seen
+below.
 
     cp sources/LGPL/glibc/glibc_ports.tar.bz2 ./src
     cp sources/LGPL/glibc/glibc.tar.bz2 ./src
     cp sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz ./src/linux.tar.gz
     
-We don't need anything else from this zip file so it and its 
-contents may be deleted to save disk space at this point. This step 
-is optional.
-
-    rm -rf sources __MACOSX Cirrus\ Package\ Licenses.docx
-    rm seagate-central-firmware-gpl-source-code.zip
+We don't need anything else from this zip file so it may be  
+deleted to save disk space at this point. 
 
 Change to the src directory and extract the archives just copied into
 it. Linux gets extracted to a directory called "git" but we must 
@@ -127,8 +129,9 @@ to the base working directory.
     popd
 
 ### Customizing maketoolchain.sh
-At this point we need to edit the **maketoolchain.sh** script in the 
-base working directory to set some parameters to guide the build process
+At this point we may need to edit the **maketoolchain.sh** script in the 
+base working directory to set some parameters to guide the build process 
+however in most cases the default settings will be fine.
 
 Working our way from the top of the script the following parameters need to
 be set and checked. The comments in the script explain the meanings of each
@@ -138,7 +141,7 @@ parameter. If in doubt just leave as they are.
     # Set to less than or equal the number of available
     # CPU cores. Use J=1 for troubleshooting
     J=6
-    
+
     # These parameters are used by glibc. "build" is the
     # type of machine we are running this build process on.
     # "host" is the type of machine the generated tools will
@@ -152,14 +155,14 @@ parameter. If in doubt just leave as they are.
     #
     build=i686-pc-linux-gnu
     host=$build
-    
+
     # To stop temporary objects from being deleted as each
     # stage finishes set to 0. This adds about 4.5GiB to the
     # disk space consumed by the build.
     CLEAN_OLD_OBJ=1
-    
+     
     # The cross compiler target name and prefix.
-    # (N.B. No dash - at the end)
+    # N.B. No dash - at the end.
     export TARGET=arm-sc-linux-gnueabi
 
 
@@ -173,34 +176,41 @@ maketoolchain.sh script
 The script will display an update as each stage of the process 
 completes.
 
-## Troubleshooting
-If a stage fails then refer to the log file displayed and try to
-correct the problem. After fixing the problem the process can be
-resumed by rerunning the script with an argument referring to the
-stage number you'd like to start with. For example, if during stage
-4 a problem is discovered but then corrected, one could re-run
-the script starting at stage 4 with the following command.
-
-    ./maketoolchain.sh 4
-    
 The generated cross compilation tools will be located in the
 cross/tools subdirectory of the base working directory.
 
-The vast majority of problems will be due to 
+## Troubleshooting
+Most problems will be due to 
 
 * A needed build system component has not been installed.
 * The build system has run out of disk space.
 * The patches in this project have not been applied to glibc or 
   glibc_ports
 
-It may be necessary to restart the build process if significant
-changes are made to the maketoolchain.sh script or if new
-system components are installed. Do this by deleting the
-**cross** and **obj** subdirectories and starting again.
-
-Other than that, check the log files referred to in the 
-script output when problems occur. It may be easier to read the
-log files if **J=1** is set in the maketoolchain.sh script. This
-way only one build thread will be active and any errors will cause
+If a stage fails then refer to the log file displayed and try to
+correct the problem. It may be easier to read the log files if
+**J=1** is set in the maketoolchain.sh script. This way only one
+build thread will be active at a time and any errors will cause
 the build to terminate straight away instead of having to wait
 for other threads to finish.
+
+If an error similar to the following appears during the GCC build
+phase then it means that you may have forgotten to run the
+**contrib/download_prerequisites** script from within the
+gcc source code sub directory.
+
+     checking for the correct version of mpfr.h... no
+     configure: error: Building GCC requires GMP 4.2+, MPFR 3.1.0+ and MPC 0.8.0+.
+
+After fixing problems the process can be resumed by rerunning
+the build script with an argument referring to the stage number
+you'd like to start with. For example, if during stage 4 a 
+problem is discovered but then corrected, one could re-run the
+script starting at stage 4 with the following command.
+
+    ./maketoolchain.sh 4
+
+If significant changes are made to the maketoolchain.sh script
+or if new system components are installed it may be necessary
+to restart the build process afresh. Do this by deleting the
+**cross** subdirectory and starting again. 
