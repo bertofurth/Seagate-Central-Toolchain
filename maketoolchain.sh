@@ -51,6 +51,11 @@ export CROSS_COMPILE=${TARGET}-
 #
 export MAKEINFO=:
 
+#
+# Uncomment this if compiling gcc 5.x.x and below using
+# building versions gcc 11.x.x and above.
+#export CXXFLAGS="-std=gnu++14"
+
 # see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=14654
 export _POSIX2_VERSION=199209
 
