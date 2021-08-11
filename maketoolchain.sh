@@ -38,7 +38,8 @@ export TARGET=arm-sc-linux-gnueabi
 
 # ************************************************
 # ************************************************
-# Nothing below here should need to be modified.
+# Nothing below here should normally need to be
+# modified.
 # ************************************************
 # ************************************************
 
@@ -47,14 +48,13 @@ export ARCH=arm
 export CROSS_COMPILE=${TARGET}-
 
 #
-# This is to stop some documentation being built
-#
-export MAKEINFO=:
+# Uncomment this if compiling gcc 5.x.x and below when
+# building with gcc 11.x.x and above.
+#export CXXFLAGS="-std=gnu++14"
 
 #
-# Uncomment this if compiling gcc 5.x.x and below using
-# building versions gcc 11.x.x and above.
-#export CXXFLAGS="-std=gnu++14"
+# This is to stop some documentation being built
+export MAKEINFO=:
 
 # see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=14654
 export _POSIX2_VERSION=199209
