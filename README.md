@@ -24,7 +24,8 @@ GCC in conjunction with binutils-2.37
 * 9.4.0
 * 8.5.0
 * 7.5.0
-* 6.5.0
+* 6.5.0 (with 0099-gcc-6.5.0.patch)
+* 5.5.0 (See Troubleshooting section)
 
 ## Prerequisites
 ### Disk space
@@ -214,3 +215,9 @@ If significant changes are made to the maketoolchain.sh script
 or if new system components are installed it may be necessary
 to restart the build process afresh. Do this by deleting the
 **cross** subdirectory and starting again. 
+
+When build gcc versions 5.x.x and below using gcc version 11.x.x 
+and above the following line in the maketoolchain.sh script
+must be uncommented.
+
+     #export CXXFLAGS="-std=gnu++14"
