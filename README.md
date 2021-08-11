@@ -12,8 +12,8 @@ gcc and make.
 This procedure has been tested to work on the following build
 platforms
 
-* OpenSUSE Tumbleweed (Aug 2021) on x86  gcc v11.1 make 4.3
-* OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  gcc v11.1 make 4.3
+* OpenSUSE Tumbleweed (Aug 2021) on x86  gcc 11.1.0 make 4.3
+* OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  gcc 11.1.0 make 4.3
 * Debian 10 (Buster) on x86  gcc 8.3.0 make 4.2.1
 
 The procedure has been tested to build the following versions of
@@ -24,7 +24,7 @@ GCC in conjunction with binutils-2.37
 * 9.4.0
 * 8.5.0
 * 7.5.0
-* 6.5.0 (with 0099-gcc-6.5.0.patch)
+* 6.5.0 (See Troubleshooting section)
 * 5.5.0 (See Troubleshooting section)
 
 ## Prerequisites
@@ -203,6 +203,27 @@ gcc source code sub directory.
      checking for the correct version of mpfr.h... no
      configure: error: Building GCC requires GMP 4.2+, MPFR 3.1.0+ and MPC 0.8.0+.
 
+When building gcc version 6.x.x a small patch must be applied
+as follows to gcc from the src directory.
+
+     patch -p0 < ../0099-gcc-6.5.0.patch
+     
+If this patch is not applied then the following error may appear
+in the logs during the build stage
+
+BERTO INSERT ERROR
+
+When building gcc versions 5.x.x and below using gcc version 11.x.x 
+and above the following line in the maketoolchain.sh script
+must be uncommented.
+
+     #export CXXFLAGS="-std=gnu++14"
+
+If this modification is not made then the following error may
+appear in the logs during the build stage
+
+BERTO INSERT ERROR
+
 After fixing problems the process can be resumed by rerunning
 the build script with an argument referring to the stage number
 you'd like to start with. For example, if during stage 4 a 
@@ -215,9 +236,3 @@ If significant changes are made to the maketoolchain.sh script
 or if new system components are installed it may be necessary
 to restart the build process afresh. Do this by deleting the
 **cross** subdirectory and starting again. 
-
-When build gcc versions 5.x.x and below using gcc version 11.x.x 
-and above the following line in the maketoolchain.sh script
-must be uncommented.
-
-     #export CXXFLAGS="-std=gnu++14"
