@@ -35,6 +35,11 @@ CLEAN_OLD_OBJ=1
 # N.B. No dash - at the end.
 export TARGET=arm-sc-linux-gnueabi
 
+#
+# Uncomment this parameter if compiling gcc 5.x.x while
+# building using gcc 11.x.x and above.
+#export CXXFLAGS="-std=gnu++14"
+
 
 # ************************************************
 # ************************************************
@@ -46,25 +51,23 @@ export TARGET=arm-sc-linux-gnueabi
 linux_arch=arm
 export ARCH=arm
 export CROSS_COMPILE=${TARGET}-
+linuxv=linux
 
 #
-# Uncomment this if compiling gcc 5.x.x and below when
-# building with gcc 11.x.x and above.
-#export CXXFLAGS="-std=gnu++14"
-
-#
-# This is to stop some documentation being built
+# This is to stop some documentation being built. 
 export MAKEINFO=:
 
 # see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=14654
 export _POSIX2_VERSION=199209
 
-linuxv=linux
+# The version of glibc associated with the Seagate
+# Central
 GLIBC=glibc-2.11-2010q1-mvl6
 
+# The locations of the source code and generated
+# binaries
 TOP=$(pwd)/cross
 SRC=$(pwd)/src
-
 OBJ=$TOP/obj
 TOOLS=$TOP/tools
 
@@ -79,7 +82,7 @@ mkdir -p $SYSROOT
 ZIPSRC=seagate-central-firmware-gpl-source-code.zip
 
 # Set the names of the gcc and binutils source
-# sub directory. Just using "binutils" and "gcc"
+# sub directory. Using "binutils" and "gcc"
 # will automatically search for the latest versions
 # of these tools.
 binutilsv=binutils
