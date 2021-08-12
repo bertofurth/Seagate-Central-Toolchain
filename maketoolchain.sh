@@ -12,6 +12,11 @@
 # CPU cores. Use J=1 for troubleshooting
 J=6
 
+# The location where the generated tools will be built
+# and finally installed. Note that this directory can't
+# easily be moved or renamed after the build is complete.
+TOP=$(pwd)/cross
+
 # These parameters are used by glibc. "build" is the
 # type of machine we are running this build process on.
 # "host" is the type of machine the generated tools will
@@ -66,7 +71,6 @@ GLIBC=glibc-2.11-2010q1-mvl6
 
 # The locations of the source code and generated
 # binaries
-TOP=$(pwd)/cross
 SRC=$(pwd)/src
 OBJ=$TOP/obj
 TOOLS=$TOP/tools
