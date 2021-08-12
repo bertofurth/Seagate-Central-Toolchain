@@ -192,11 +192,14 @@ maketoolchain.sh script
 
     ./maketoolchain.sh
 
-The script will display an update as each stage of the process 
-completes.
+The script will display a stage number, status and location of
+a log file as each stage of the process completes. 
+
+If a stage fails then the script will halt.
 
 The generated cross compilation tools will be located in the
-cross/tools subdirectory of the base working directory.
+directory specified by the TOP parameter which by default is
+the cross/tools subdirectory of the base working directory.
 
 ## Troubleshooting
 Most problems will be due to 
