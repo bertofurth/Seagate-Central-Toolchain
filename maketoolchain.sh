@@ -126,6 +126,7 @@ fi
 
 echo
 echo "Building $TARGET toolchain in $TOOLS"
+echo "$binutilsv  $gccv"
 echo "sysroot is $SYSROOT"
 echo
 echo "Reference: Cross-Compiling EGLIBC by Jim Blandy <jimb@codesourcery.com>"
