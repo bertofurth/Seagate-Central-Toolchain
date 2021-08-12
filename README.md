@@ -7,9 +7,9 @@ This project is based on
 https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain
 
 which builds a Seagate Central toolchain based on gcc 4.4.x. In
-contrast, this project works with contemporary versions of gcc to
-build a toolchain based on contempory versions of gcc (5.x.x and
-above).
+contrast, this project works with contemporary versions of gcc
+on the build host to build a toolchain based on contempory
+versions of gcc (5.x.x and above).
 
 This procedure has been tested to work on the following build
 platforms
@@ -148,6 +148,14 @@ parameter. If in doubt just leave as they are.
     # Set to less than or equal the number of available
     # CPU cores. Use J=1 for troubleshooting
     J=6
+
+    # The location where the generated tools will be built
+    # and finally installed. Note that this directory can't
+    # easily be moved or renamed after the build is complete.
+    #
+    # If you're building multiple versions of gcc then name
+    # this something like cross-X.Y.Z for each version
+    TOP=$(pwd)/cross
 
     # These parameters are used by glibc. "build" is the
     # type of machine we are running this build process on.
