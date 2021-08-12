@@ -243,8 +243,7 @@ as follows to gcc from the src directory.
 If this patch is not applied then the following error may appear
 in the make_gcc3.log during the make 3rd (final) GCC build stage
 
-    ..../src/gcc-6.5.0/libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc:332:44: error: ‘ARM_VFPREGS_SIZE’ was
-not declared in this scope
+    ..../src/gcc-6.5.0/libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc:332:44: error: ‘ARM_VFPREGS_SIZE’ was not declared in this scope
 
 ### gcc 5.x.x
 When building gcc versions 5.x.x while using gcc version 11.x.x
