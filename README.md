@@ -179,6 +179,10 @@ parameter. If in doubt just leave as they are.
     # The cross compiler target name and prefix.
     # N.B. No dash - at the end.
     export TARGET=arm-sc-linux-gnueabi
+    
+    # Uncomment this parameter if compiling gcc 5.x.x while
+    # building using gcc 11.x.x and above.
+    #export CXXFLAGS="-std=gnu++14"
 
 
 ## Building
