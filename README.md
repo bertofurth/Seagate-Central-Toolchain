@@ -7,9 +7,9 @@ This project is based on
 https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain
 
 which builds a Seagate Central toolchain based on gcc 4.4.x. In
-contrast, this project works with contemporary versions of gcc to
-build a toolchain based on contempory versions of gcc (5.x.x and
-above).
+contrast, this project works with contemporary versions of gcc
+on the build host to build a toolchain based on contempory
+versions of gcc (5.x.x and above).
 
 This procedure has been tested to work on the following build
 platforms
@@ -149,6 +149,14 @@ parameter. If in doubt just leave as they are.
     # CPU cores. Use J=1 for troubleshooting
     J=6
 
+    # The location where the generated tools will be built
+    # and finally installed. Note that this directory can't
+    # easily be moved or renamed after the build is complete.
+    #
+    # If you're building multiple versions of gcc then name
+    # this something like cross-X.Y.Z for each version
+    TOP=$(pwd)/cross
+
     # These parameters are used by glibc. "build" is the
     # type of machine we are running this build process on.
     # "host" is the type of machine the generated tools will
@@ -171,6 +179,10 @@ parameter. If in doubt just leave as they are.
     # The cross compiler target name and prefix.
     # N.B. No dash - at the end.
     export TARGET=arm-sc-linux-gnueabi
+    
+    # Uncomment this parameter if compiling gcc 5.x.x while
+    # building using gcc 11.x.x and above.
+    #export CXXFLAGS="-std=gnu++14"
 
 
 ## Building
@@ -180,11 +192,14 @@ maketoolchain.sh script
 
     ./maketoolchain.sh
 
-The script will display an update as each stage of the process 
-completes.
+The script will display a stage number, status and location of
+a log file as each stage of the process completes. 
+
+If a stage fails then the script will halt.
 
 The generated cross compilation tools will be located in the
-cross/tools subdirectory of the base working directory.
+directory specified by the TOP parameter which by default is
+the cross/tools subdirectory of the base working directory.
 
 ## Troubleshooting
 Most problems will be due to 
@@ -231,8 +246,7 @@ as follows to gcc from the src directory.
 If this patch is not applied then the following error may appear
 in the make_gcc3.log during the make 3rd (final) GCC build stage
 
-    ..../src/gcc-6.5.0/libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc:332:44: error: ‘ARM_VFPREGS_SIZE’ was
-not declared in this scope
+    ..../src/gcc-6.5.0/libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc:332:44: error: ‘ARM_VFPREGS_SIZE’ was not declared in this scope
 
 ### gcc 5.x.x
 When building gcc versions 5.x.x while using gcc version 11.x.x
