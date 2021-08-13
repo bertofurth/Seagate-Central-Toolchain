@@ -43,7 +43,6 @@ CLEAN_OLD_OBJ=1
 # N.B. No dash - at the end.
 export TARGET=arm-sc-linux-gnueabi
 
-#
 # Uncomment this parameter if compiling gcc 5.x.x while
 # building using gcc 11.x.x and above.
 #export CXXFLAGS="-std=gnu++14"
@@ -156,10 +155,8 @@ checkerr()
 {
     if [ $1 -ne 0 ]; then
 	echo -e "$RED  Failure: $2. $NOCOLOR $(date +%T) Check $3"
-	tail $3
-# Die if there's an error	
-	exit 1
-	if [ ${4-1} -eq 1 ]; then
+	tail -n 100 $3 | grep -i error
+	if [ $4 -eq 1 ]; then
 	    echo -e "$YEL           trying to continue $NOCOLOR"
 	else
 	    exit 1
