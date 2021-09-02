@@ -53,32 +53,53 @@ The following packages or their equivalents may need to be installed.
 * lbzip2
 * bzip2
 * libtirpc-devel
+* wget (or use "curl -O")
+* git (optional)
 
 #### Debian 10 - Buster (apt-get install ...)
 * build-essential
 * unzip
 * gawk
-* curl (or use wget)
+* git (optional)
 
 ## Procedure
-### Preparation and source code download
-Download the files in this project to a new directory on your
-build machine. This will be referred to as the base working 
-directory going forward.
+### Workspace preparation
+If not already done, download the files in this project to a 
+new directory on your build machine. 
 
+For example, the following **git** command will download the 
+files in this project to a new subdirectory called 
+Seagate-Central-Samba
+
+    git clone https://github.com/bertofurth/Seagate-Central-Toolchain.git
+    
+Alternately, the following **wget** and **unzip** commands will 
+download the files in this project to a new subdirectory called
+Seagate-Central-Toolchain-main
+
+    wget https://github.com/bertofurth/Seagate-Central-Toolchain/archive/refs/heads/main.zip
+    unzip main.zip
+
+Change into this new subdirectory. This will be referred to as 
+the base working directory going forward.
+
+     cd Seagate-Central-Toolchain
+     
+### Source code download
 The next part of the procedure involves gathering the source
 code for each component and installing it into the **src** 
 subdirectory of our workspace. First, ensure that this directory 
-exists.
+exists then change into it.
 
     mkdir -p src
+    cd src
 
 Download the Seagate Central GPL source code archive from 
 Seagate's website using a tool like **wget** or **curl -O**, then
 unzip the archive. This file contains the open source components 
 that go into making the software on the Seagate Central.
 
-    curl -O https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip
+    wget https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip
     unzip seagate-central-firmware-gpl-source-code.zip
     
 We need to copy the Seagate Central version of glibc, glibc-ports
@@ -87,19 +108,19 @@ directory. Note the linux source code has quite an unintuitive
 name so I suggest you rename it during the copy process as seen
 below.
 
-    cp sources/LGPL/glibc/glibc_ports.tar.bz2 ./src
-    cp sources/LGPL/glibc/glibc.tar.bz2 ./src
-    cp sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz ./src/linux.tar.gz
+    cp sources/LGPL/glibc/glibc_ports.tar.bz2 ./
+    cp sources/LGPL/glibc/glibc.tar.bz2 ./
+    cp sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz ./linux.tar.gz
     
-We don't need anything else from this zip file so it may be  
-deleted to save disk space at this point. 
+We don't need anything else from this zip file so it and the
+"sources" subdirectory containing its contents may be deleted 
+to save disk space at this point. 
 
-Change to the src directory and extract the archives just copied into
-it. Linux gets extracted to a directory called "git" but we must 
-rename it to "linux". We also need to install a link within the glibc
-source tree to the glibc_ports directory.
+Extract the newly downloaded archives. Linux gets extracted to a 
+directory called "git" but we must rename it to "linux". We also 
+need to install a link within the glibc source tree to the 
+glibc_ports directory.
 
-    pushd src
     tar -xf linux.tar.gz
     mv git linux
     tar -xf glibc.tar.bz2
@@ -118,8 +139,8 @@ Download and extract binutils and gcc to the src directory. In this example
 we use the latest stable versions at the time of writing, binutils-2.37 and
 gcc-11.2.0.
     
-    curl -O http://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.bz2
-    curl -O http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
+    wget http://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.bz2
+    wget http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
     tar -xf binutils-2.37.tar.bz2
     tar -xf gcc-11.2.0.tar.xz
      
@@ -133,7 +154,7 @@ embedded in the gcc source code as follows.
 Now that all the required source code is present we change directories back 
 to the base working directory.
 
-    popd
+    cd ../..
 
 ### Customizing maketoolchain.sh
 At this point we may need to edit the **maketoolchain.sh** script in the 
