@@ -1,3 +1,5 @@
+TODO : Change linux source code versions. Check if using v5 linux always works anyway.
+
 # Seagate-Central-Toolchain
 Generate a toolchain to cross compile binaries for the Seagate 
 Central NAS.
