@@ -88,6 +88,10 @@ the base working directory going forward.
      cd Seagate-Central-Toolchain
      
 ### Source code download
+
+TODO : Make a DOWNLOAD AND UNPACK script for both seagte linux
+and for "latest tested" linux
+
 The next part of the procedure involves gathering the source
 code for each component and installing it into the **src** 
 subdirectory of our workspace. First, ensure that this directory 
@@ -112,7 +116,17 @@ below.
 
     cp sources/LGPL/glibc/glibc_ports.tar.bz2 ./
     cp sources/LGPL/glibc/glibc.tar.bz2 ./
+    
+BERTO HERE HERE
+Use one or the other
+
     cp sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz ./linux.tar.gz
+    
+    OR
+    
+    wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.14.tar.xz
+    
+    MODIFY SCRIPT TO USE "LATEST" VERSION
     
 We don't need anything else from this zip file so it and the
 "sources" subdirectory containing its contents may be deleted 
@@ -136,6 +150,9 @@ included in this project and can be applied from the src directory as follows.
      
     patch -p0 < ../0001-Seagate-Central-glibc-2.11.patch
     patch -p0 < ../0002-Seagate-Central-glibc-ports.patch
+    
+    
+BERTO TODO : ADD A DOWNLOAD SCRIPT    
     
 Download and extract binutils and gcc to the src directory. In this example 
 we use the latest stable versions at the time of writing, binutils-2.37 and
