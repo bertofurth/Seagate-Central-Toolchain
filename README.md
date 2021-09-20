@@ -31,7 +31,7 @@ This procedure has been tested to work on the following build
 platforms
 
 * OpenSUSE Tumbleweed (Aug 2021) on x86 (GCC 11.1.0, make 4.3)
-* OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  (GCC 11.1.0, make 4.3)
+* OpenSUSE Tumbleweed (Aug 2021) on Raspberry Pi 4B  (See Troubleshooting section)
 * Debian 10 (Buster) on x86  (GCC 8.3.0, make 4.2.1)
 
 The procedure has been tested building the following versions of
@@ -280,6 +280,16 @@ as they are.
     # *****************************************************
     # *****************************************************
     
+    # Some build platforms are not correctly detected by
+    # the GLIBC build process. Particularly Raspberry Pi
+    #
+    # Uncomment this variable if building on a Raspberry
+    # Pi or if an error of the following type appears
+    #
+    # configure: error: cannot guess build type; you must specify one
+    #
+    #BUILD_PLATFORM_STRING=--build=arm-linux-gnu
+
     # To stop temporary objects from being deleted as each
     # stage finishes uncomment the following variable. This 
     # adds up to 5GB to the disk space consumed by the build.
@@ -354,6 +364,21 @@ Releases of GCC issued after June 2021 should resolve this issue.
 See
 
 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100379
+
+### Building on Raspberry Pi
+Since the version of GLIBC being used is quite old, it does not
+automatically recognize the Raspberry Pi arm64 style build platform.
+
+An error similar to the following may appear while GLIBC is going
+through the configure stage.
+
+    configure: error: cannot guess build type; you must specify one
+
+Since this is the case, the "build" configure script parameter
+needs to be manually specified for GLIBC. This can be done by
+uncommenting the following variable in the maketoolchain.sh script.
+
+    BUILD_PLATFORM_STRING=--build=arm-linux-gnu
 
 ### GCC 6.x.x
 When building GCC version 6.x.x a small patch must be applied
