@@ -5,6 +5,9 @@
 # otherwise noted these are the latest stable versions
 # available at the time of writing.
 
+# Set environment variable SEAGATE_LINUX=1 if you
+# want to use Seagate's version of linux headers.
+
 # Based on gcc's download_prerequisites script
 
 gcc='http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz'
@@ -15,7 +18,9 @@ scgplzip='https://www.seagate.com/files/www-content/support-content/external-pro
 echo_archives() {
     echo "${gcc}"
     echo "${binutils}"
+if [ -z ${SEAGATE_LINUX+x} ]; then    
     echo "${linux}"
+fi
 }
 
 echo_zip_archives() {
@@ -63,7 +68,7 @@ if [ $? -ne 0 ]; then
     echo "ERROR running download_prerequisites!!"
     echo "Continuing...but check this later or make gcc will fail!!"
 fi
-
+popd
 
 # Seagate Central Toolchain specific steps
 
@@ -76,6 +81,17 @@ unzip -q "$(basename ${scgplzip})" \
       sources/LGPL/glibc/glibc.tar.bz2 \
     || die "Cannot extract $(basename ${scgplzip})"
 
+if [ ! -z ${SEAGATE_LINUX+x} ]; then
+    echo "Extracting Seagate Linux"
+    unzip -q "$(basename ${scgplzip})" \
+	  sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz \
+	  die "Cannot extract Seagate Linux from $(basename ${scgplzip})"
+    cp sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz ./linux-seagate.tar.gz
+    tar -xf linux-seagate.tar.gz || die "Cannot extract linux-seagate.tar.gz"
+    mv git linux-seagate
+fi
+
+
 echo "Copying and extracting components..."
 cp sources/LGPL/glibc/glibc_ports.tar.bz2 ./
 cp sources/LGPL/glibc/glibc.tar.bz2 ./
@@ -86,4 +102,5 @@ ln -s ../glibc-ports-2.11-2010q1-mvl6/ glibc-2.11-2010q1-mvl6/ports
 echo "Patching glibc...Check for errors!!"
 patch -p0 < ../0001-Seagate-Central-glibc-2.11.patch
 patch -p0 < ../0002-Seagate-Central-glibc-ports.patch
+
 
