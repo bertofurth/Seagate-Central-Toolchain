@@ -37,7 +37,17 @@ J=6
 # be changed.
 # *****************************************************
 # *****************************************************
-    
+
+# Some build platforms are not correctly detected by
+# the GLIBC build process. Particularly Raspberry Pi
+#
+# Uncomment this variable if building on a Raspberry
+# Pi or if an error of the following type appears
+#
+# configure: error: cannot guess build type; you must specify one
+# 
+#BUILD_PLATFORM_STRING=--build=arm-linux-gnu
+
 # To stop temporary objects from being deleted as each
 # stage finishes uncomment the following variable. This 
 # adds up to 5GB to the disk space consumed by the build.
@@ -328,6 +338,7 @@ if [[ $skip_stage -eq 0 ]]; then
 				       $SRC/$GLIBC/configure \
 				       --prefix=/usr \
 				       --with-headers=$SYSROOT/usr/include \
+				       $BUILD_PLATFORM_STRING \
 				       --host=$TARGET \
 				       --disable-profile --without-gd --without-cvs --enable-add-ons \
 	&> $TOP/config_eglibc1.log
