@@ -2,19 +2,19 @@
 Generate a toolchain to cross compile binaries for the Seagate 
 Central NAS.
 
-This project is based on 
+This project is based on "seagate-nas-central-toolchain" by
+mauro-dellachiesa which builds a toolchain based on GCC 4.4.x
 
 https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain
 
-which builds a Seagate Central toolchain based on GCC 4.4.x. 
-
-In contrast, this project builds a toolchain based on recent
+In contrast, this project builds a toolchain based on more recent
 versions of GCC. By default, GCC version 11.2.0 is built however any
-version after 5.x.x should be able to be built.
+version of GCC after 5.x.x should be able to be built using the 
+instructions in this project.
 
 ## TLDNR
-Build a GCC 11.2.0 based cross compilation toolchain for the
-Seagate Central as follows.
+Build a GCC 11.2.0 based cross compilation toolchain with prefix
+"arm-sc-linux-gnueabi-" for the Seagate Central as follows.
 
     # Download this project to the build host
     git clone https://github.com/bertofurth/Seagate-Central-Toolchain.git
@@ -35,7 +35,7 @@ platforms
 * Debian 10 (Buster) on x86  (GCC 8.3.0, make 4.2.1)
 
 The procedure has been tested building the following versions of
-GCC in conjunction with binutils-2.37 (latest at time of writing) and
+GCC in conjunction with binutils v2.37 (latest at time of writing) and
 both Linux 5.14 (latest) and the Seagate supplied Linux headers (2.6.35)
 (See note in troubleshooting section in regards to using Linux later
 than 5.12.x for some versions of GCC)
@@ -107,9 +107,9 @@ the base working directory going forward.
      
 ### Source code download
 #### Automated Download scripts
-There are two automated download scripts that will automatically
-retrieve and extract the versions of software tested using this
-procedure. It's only required to choose and execute one.
+There are two automatic download scripts included in this project
+that will retrieve and extract the versions of software tested using
+this procedure. It's only required to choose and execute one.
 
 ##### Option 1 - download-sc-toolchain-src.sh (Recommended)
 The "download-sc-toolchain-src.sh" script will automatically download
@@ -123,6 +123,8 @@ same major version numbers, will still work with this guide.
 * linux-5.14 - https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.14.tar.xz
 * Seagate Central GPL - https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip
 
+     ./download-sc-toolchain-src.sh
+     
 ##### Option 2 - download-sc-toolchain-seagate-linux-src.sh (Rare)
 The "download-sc-toolchain-seagate-linux-src.sh" script will download
 and extract the same software versions as listed above however, it
@@ -130,6 +132,8 @@ will not download Linux. Instead, it will setup the build to make
 use of the original Seagate Central supplied Linux kernel headers 
 (2.6.35.13-cavm1.whitney-econa) that come in the Seagate Central GPL
 archive zip file.
+
+     ./download-sc-toolchain-seagate-linux-src.sh
 
 Only use this option if you are building a very old version of 
 software that does not work well with modern Linux headers AND
@@ -243,7 +247,7 @@ At this point we may need to edit the **maketoolchain.sh** script in the
 base working directory to set some parameters to guide the build process 
 however in most cases the default settings will be fine.
 
-Working our way from the top of the script the following parameters need to
+Working our way from the top of the script, the following parameters need to
 be set and checked. The most important are the first two. The comments in
 the script explain the meanings of each parameter. If in doubt just leave
 as they are.
@@ -253,7 +257,7 @@ as they are.
     # Should be something like arm-XXXX-linux-gnueabi
     # N.B. No dash (-) at the end.
     #
-    export TARGET=arm-sc-linux-gnueabi
+    TARGET=arm-sc-linux-gnueabi
 
     # The location where the generated tools will be 
     # installed once building is complete.
@@ -290,11 +294,11 @@ as they are.
          
     # Uncomment this parameter if compiling gcc 5.x.x while
     # building using gcc 11.x.x and above.
-    #export CXXFLAGS="-std=gnu++14"
+    #CXXFLAGS="-std=gnu++14"
 
 
 ## Building
-the build can be run by executing the maketoolchain.sh script
+The build can be run by executing the maketoolchain.sh script
 
     ./maketoolchain.sh
 
