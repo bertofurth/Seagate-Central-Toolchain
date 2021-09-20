@@ -47,20 +47,33 @@ fi
 for ar in $(echo_archives)
 do
 	${fetch} "${ar}"    \
-		 || die "Cannot download $ar"
+	    || die "Cannot download $ar"
+	echo "Extracting $(basename ${ar})"
         tar -xf "$(basename ${ar})" \
-		 || die "Cannot extract $(basename ${ar})"
+	    || die "Cannot extract $(basename ${ar})"
 done
 unset ar
 
 for ar in $(echo_zip_archives)
 do	  
 	${fetch} "${ar}"    \
-		 || die "Cannot download $ar"
+	    || die "Cannot download $ar"
+	echo "Extracting $(basename ${ar})"
         unzip "$(basename ${ar})" \
-		 || die "Cannot extract $(basename ${ar})"
+	    || die "Cannot extract $(basename ${ar})"
 done
 unset ar
+
+# Run download_prerequisites for gcc
+gccv=$(basename ${gcc})
+echo "Running ./contrib/download_prerequisites for $gccv"
+pushd $gccv
+./contrib/download_prerequisites
+if [ $? -ne 0 ]; then
+    echo "Error running download_prerequisites"
+    echo "Continuing...but check this later or make gcc will fail"
+fi
+
 
 # Seagate Central Toolchain specific steps
 
