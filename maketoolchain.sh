@@ -7,46 +7,53 @@
 # argument number to begin the process at a stage other
 # than the start.
 
-# Number of threads to engage during build process.
-# Set to less than or equal the number of available
-# CPU cores. Use J=1 for troubleshooting
-J=6
+# Edit the following variables to suit your build
+# requirements.
 
-# The location where the generated tools will be built
-# and finally installed. Note that this directory can't
-# easily be moved or renamed after the build is complete.
+# The target name and prefix that will be given
+# to the generated toolchain.
+# Should be something like arm-XXXX-linux-gnueabi
+# N.B. No dash (-) at the end.
+#
+export TARGET=arm-sc-linux-gnueabi
+
+# The location where the generated tools will be 
+# installed once building is complete.
 #
 # If you're building multiple versions of gcc then name
 # this something like cross-X.Y.Z for each version
+#
 TOP=$(pwd)/cross
 
-# These parameters are used by glibc. "build" is the
-# type of machine we are running this build process on.
-# "host" is the type of machine the generated tools will
-# run on. They are generally the same. Note that this
-# is different to "TARGET" which is the platform
-# the resultant cross compiler will generate binaries
-# for (i.e. the Seagate Central)
+# Number of threads to engage during build process.
+# Normally set to less than or equal the number of
+# available CPU cores. Use J=1 for troubleshooting
 #
-# Typical values are i686-pc-linux-gnu for PCs or
-# arm-linux-gnu for Raspberry Pi.
-# 
-build=i686-pc-linux-gnu
-host=$build
+J=6
 
+# *****************************************************
+# *****************************************************
+# It's not likely that any of the values below need to
+# be changed.
+# *****************************************************
+# *****************************************************
+    
 # To stop temporary objects from being deleted as each
-# stage finishes set to 0. This adds about 4.5GiB to the
-# disk space consumed by the build.
-CLEAN_OLD_OBJ=1
-
-# The cross compiler target name and prefix.
-# N.B. No dash - at the end.
-export TARGET=arm-sc-linux-gnueabi
-
+# stage finishes uncomment the following variable. This 
+# adds up to 5GB to the disk space consumed by the build.
+#KEEP_OLD_OBJ=1
+    
+# To embed a "sysroot" directory in the toolchain uncomment
+# the following variable. Embedding a sysroot directory makes
+# cross compilation a little easier but it means the built
+# toolchain is difficult to move to another directory after
+# it's been generated and installed.
+#WITH_SYSROOT=1
+         
 # Uncomment this parameter if compiling gcc 5.x.x while
 # building using gcc 11.x.x and above.
 #export CXXFLAGS="-std=gnu++14"
-
+    
 
 # ************************************************
 # ************************************************
@@ -58,7 +65,6 @@ export TARGET=arm-sc-linux-gnueabi
 linux_arch=arm
 export ARCH=arm
 export CROSS_COMPILE=${TARGET}-
-linuxv=linux
 
 #
 # This is to stop some documentation being built. 
@@ -78,6 +84,11 @@ OBJ=$TOP/obj
 TOOLS=$TOP/tools
 
 export SYSROOT=$TOP/sysroot
+
+if [[ $WITH_SYSROOT -eq 1 ]]; then
+    WITH_SYSROOT_OPTION="--with-sysroot=$SYSROOT"
+fi
+
 export PATH=$TOOLS/bin:$PATH
 unset LD_LIBRARY_PATH
 
@@ -88,14 +99,15 @@ mkdir -p $SYSROOT
 ZIPSRC=seagate-central-firmware-gpl-source-code.zip
 
 # Set the names of the gcc and binutils source
-# sub directory. Using "binutils" and "gcc"
-# will automatically search for the latest versions
-# of these tools.
+# sub directory. We automatically search for
+# the latest version of name-X.X.X
 binutilsv=binutils
 gccv=gcc
+linuxv=linux
 
 gccv=$(basename $(ls -1drv $SRC/$gccv*/))
 binutilsv=$(basename $(ls -1drv $SRC/$binutilsv*/))
+linuxv=$(basename $(ls -1drv $SRC/$linuxv*/))
 
 if [ ! -d $SRC/$gccv ]; then
     echo "Unable to find gcc. Please have gcc source installed"
@@ -103,9 +115,22 @@ if [ ! -d $SRC/$gccv ]; then
     exit 1
 fi
 
+if [ ! -d $SRC/$gccv/gmp ]; then
+    echo "Unable to find gcc prerequisites in $SRC/$gccv"
+    echo "Running ./contrib/download_prerequisites "
+    pushd $SRC/$gccv
+    ./contrib/download_prerequisites
+    if [ $? -ne 0 ]; then
+       echo "Error running download_prerequisites"
+       echo "Exiting"
+       exit -1
+    fi   
+fi
+
 if [ ! -d $SRC/$linuxv ]; then
     echo "Please copy $linuxv to $SRC/$linuxv"
     echo "$linuxv is included in GPL/linux/git_<...>.tar.gz in $ZIPSRC"
+    echo "or download a version from kernel.org"
     exit 1
 fi
 
@@ -132,8 +157,18 @@ fi
 
 echo
 echo "Building $TARGET toolchain in $TOOLS"
-echo "Building $binutilsv $gccv"
+echo "Detected $binutilsv $gccv"
+echo "Using linux headers in $SRC/$linuxv"
 echo "sysroot is $SYSROOT"
+if [[ $WITH_SYSROOT -eq 1 ]]; then
+    echo "Embedding sysroot $SYSROOT in generated toolset "
+else
+    echo "Not embedding sysroot in generated toolset (default) "
+fi
+if [[ $KEEP_OLD_OBJ -eq 1 ]]; then
+    echo "WARNING - Keeping old objects!! May consume 5GB extra disk space!!"
+fi
+
 echo
 echo "Reference: Cross-Compiling EGLIBC by Jim Blandy <jimb@codesourcery.com>"
 echo "           in $SRC/$GLIBC/EGLIBC.cross-building"
@@ -142,6 +177,7 @@ echo
 # Printing free space on the device because this process takes up
 # so much disk space.
 df -h $OBJ
+
 echo
 
 GRN="\e[32m"
@@ -150,17 +186,13 @@ YEL="\e[33m"
 NOCOLOR="\e[0m"
 
 #report error.  4 arguments.
-# $1-retval (0 means success)  $2-name $3-log file $4-cont. on fail (optional)
+# $1-retval (0 means success)  $2-name $3-log file 
 checkerr()
 {
     if [ $1 -ne 0 ]; then
 	echo -e "$RED  Failure: $2. $NOCOLOR $(date +%T) Check $3"
-	tail -n 100 $3 | grep -i error
-	if [ $4 -eq 1 ]; then
-	    echo -e "$YEL           trying to continue $NOCOLOR"
-	else
-	    exit 1
-	fi
+	tail -n 10 $3 | grep -i error
+	exit 1
     else
 	echo -e "$GRN  Success: $2.$NOCOLOR $(date +%T) See $3"
     fi
@@ -169,7 +201,7 @@ checkerr()
 clean_obj()
 {
     cd $OBJ
-    if [[ $CLEAN_OLD_OBJ -eq 1 ]]; then
+    if [[ ! $KEEP_OLD_OBJ -eq 1 ]]; then
 	rm -rf $1
     fi
 
@@ -192,7 +224,7 @@ new_stage()
         skip_stage=1
     fi
 }
-mkdir -p $SRC
+
 cd $SRC
 
 new_stage "binutils ($binutilsv)" 
@@ -213,8 +245,10 @@ if [[ $skip_stage -eq 0 ]]; then
     cd $OBJ/binutils
 
     $SRC/$binutilsv/configure --target=$TARGET --prefix=$TOOLS \
-			      --with-sysroot=$SYSROOT --disable-multilib \
+                              --disable-multilib \
+			      $WITH_SYSROOT_OPTION \
 			      --disable-werror &> $TOP/config_binutils.log
+    
     checkerr $? "config binutils" $TOP/config_binutils.log
     make -j$J &> $TOP/make_binutils.log
     checkerr $? "make binutils" $TOP/make_binutils.log
@@ -268,7 +302,7 @@ if [[ $skip_stage -eq 0 ]]; then
     clean_obj "$OBJ/gcc1"
 fi
 
-new_stage "Linux headers"
+new_stage "Linux headers ($linuxv)"
 if [[ $skip_stage -eq 0 ]]; then
     ### LINUX KERNEL HEADERS
     cp -r $SRC/$linuxv $OBJ/linux
@@ -294,7 +328,6 @@ if [[ $skip_stage -eq 0 ]]; then
 				       $SRC/$GLIBC/configure \
 				       --prefix=/usr \
 				       --with-headers=$SYSROOT/usr/include \
-	      			       --build=$build \
 				       --host=$TARGET \
 				       --disable-profile --without-gd --without-cvs --enable-add-ons \
 	&> $TOP/config_eglibc1.log
@@ -328,7 +361,7 @@ if [[ $skip_stage -eq 0 ]]; then
 	--with-headers=$SYSROOT/usr/include \
 	--disable-libatomic \
 	--disable-libquadmath \
-	--disable-libssp --disable-libgomp --disable-libmudflap \
+	--disable-libssp --disable-libgomp  \
 	--enable-languages=c \
 	&> $TOP/config_gcc2.log
     checkerr $? "config 2nd GCC" $TOP/config_gcc2.log
@@ -356,7 +389,6 @@ if [[ $skip_stage -eq 0 ]]; then
 				       $SRC/$GLIBC/configure \
 				       --prefix=/usr \
 				       --with-headers=$SYSROOT/usr/include \
-				       --build=$build \
 				       --host=$TARGET \
 				       --disable-profile --without-gd --without-cvs --enable-add-ons \
 	&> $TOP/config_eglibc2.log 
@@ -381,15 +413,25 @@ if [[ $skip_stage -eq 0 ]]; then
     mkdir -p $OBJ/gcc3
 
     cd $OBJ/gcc3
-
+#    echo LDFLAGS IS CURRENTLY $LDFLAGS
+#    sleep 10
+#    export LDFLAGS=$LDFLAGS" -Wl,--sysroot=$SYSROOT"
+#    echo New LDFLAGS is $LDFLAGS
+#    sleep 10
+    
     $SRC/$gccv/configure \
 	--target=$TARGET \
 	--prefix=$TOOLS \
-	--with-sysroot=$SYSROOT \
 	--enable-__cxa_atexit \
-	--disable-libssp --disable-libgomp --disable-libmudflap \
+	--disable-libssp \
+	--disable-libgomp \
 	--enable-languages=c,c++ \
+	$WITH_SYSROOT_OPTION \
+	--with-build-sysroot=$SYSROOT \
 	&> $TOP/config_gcc3.log
+
+# 	--with-sysroot=$SYSROOT 
+    
     checkerr $? "config 3rd (final) GCC" $TOP/config_gcc3.log
 
     make -j$J &> $TOP/make_gcc3.log
