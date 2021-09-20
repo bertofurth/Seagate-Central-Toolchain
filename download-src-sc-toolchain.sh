@@ -54,37 +54,36 @@ do
 done
 unset ar
 
-for ar in $(echo_zip_archives)
-do	  
-	${fetch} "${ar}"    \
-	    || die "Cannot download $ar"
-	echo "Extracting $(basename ${ar})"
-        unzip "$(basename ${ar})" \
-	    || die "Cannot extract $(basename ${ar})"
-done
-unset ar
-
 # Run download_prerequisites for gcc
-gccv=$(basename ${gcc})
+gccv=$(basename -s .tar.xz ${gcc})
 echo "Running ./contrib/download_prerequisites for $gccv"
 pushd $gccv
 ./contrib/download_prerequisites
 if [ $? -ne 0 ]; then
-    echo "Error running download_prerequisites"
-    echo "Continuing...but check this later or make gcc will fail"
+    echo "ERROR running download_prerequisites!!"
+    echo "Continuing...but check this later or make gcc will fail!!"
 fi
 
 
 # Seagate Central Toolchain specific steps
 
-echo "Copying and extracting glibc..."
+# Download and extract only required components of the
+# Seagate Central GPL archive to save disk space.
+${fetch} "${scgplzip}" || die "Cannot download $scgplzip"
+echo "Extracting needed sources from $(basename ${scgplzip})"
+unzip -q "$(basename ${scgplzip})" \
+      sources/LGPL/glibc/glibc_ports.tar.bz2 \
+      sources/LGPL/glibc/glibc.tar.bz2 \
+    || die "Cannot extract $(basename ${scgplzip})"
+
+echo "Copying and extracting components..."
 cp sources/LGPL/glibc/glibc_ports.tar.bz2 ./
 cp sources/LGPL/glibc/glibc.tar.bz2 ./
-tar -xf glibc.tar.bz2
-tar -xf glibc_ports.tar.bz2
+tar -xf glibc.tar.bz2 || die "Cannot extract glibc.tar.bz2"
+tar -xf glibc_ports.tar.bz2 || die "Cannot extract glibc_ports.tar.bz2"
 ln -s ../glibc-ports-2.11-2010q1-mvl6/ glibc-2.11-2010q1-mvl6/ports
 
-echo "Patching glibc..."
+echo "Patching glibc...Check for errors!!"
 patch -p0 < ../0001-Seagate-Central-glibc-2.11.patch
 patch -p0 < ../0002-Seagate-Central-glibc-ports.patch
 

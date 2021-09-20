@@ -400,6 +400,7 @@ if [[ $skip_stage -eq 0 ]]; then
 				       $SRC/$GLIBC/configure \
 				       --prefix=/usr \
 				       --with-headers=$SYSROOT/usr/include \
+				       $BUILD_PLATFORM_STRING \
 				       --host=$TARGET \
 				       --disable-profile --without-gd --without-cvs --enable-add-ons \
 	&> $TOP/config_eglibc2.log 
