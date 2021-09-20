@@ -15,7 +15,7 @@
 # Should be something like arm-XXXX-linux-gnueabi
 # N.B. No dash (-) at the end.
 #
-export TARGET=arm-sc-linux-gnueabi
+TARGET=arm-sc-linux-gnueabi
 
 # The location where the generated tools will be 
 # installed once building is complete.
@@ -52,7 +52,7 @@ J=6
          
 # Uncomment this parameter if compiling gcc 5.x.x while
 # building using gcc 11.x.x and above.
-#export CXXFLAGS="-std=gnu++14"
+#CXXFLAGS="-std=gnu++14"
     
 
 # ************************************************
