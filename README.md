@@ -37,7 +37,7 @@ platforms
 The procedure has been tested building the following versions of
 GCC in conjunction with binutils v2.37 (latest at time of writing) and
 both Linux 5.14 (latest) and the Seagate supplied Linux headers (2.6.35)
-(See note in troubleshooting section in regards to using Linux later
+(See note in Troubleshooting section in regards to using Linux later
 than 5.12.x for some versions of GCC)
 
 * 11.2.0 (Default)
