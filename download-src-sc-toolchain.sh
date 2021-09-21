@@ -80,6 +80,11 @@ unzip -q "$(basename ${scgplzip})" \
       sources/LGPL/glibc/glibc_ports.tar.bz2 \
       sources/LGPL/glibc/glibc.tar.bz2 \
     || die "Cannot extract $(basename ${scgplzip})"
+cp sources/LGPL/glibc/glibc_ports.tar.bz2 ./
+cp sources/LGPL/glibc/glibc.tar.bz2 ./
+tar -xf glibc.tar.bz2 || die "Cannot extract glibc.tar.bz2"
+tar -xf glibc_ports.tar.bz2 || die "Cannot extract glibc_ports.tar.bz2"
+ln -s ../glibc-ports-2.11-2010q1-mvl6/ glibc-2.11-2010q1-mvl6/ports
 
 if [ ! -z ${SEAGATE_LINUX+x} ]; then
     echo "Extracting Seagate Linux"
@@ -91,16 +96,6 @@ if [ ! -z ${SEAGATE_LINUX+x} ]; then
     mv git linux-seagate
 fi
 
-
-echo "Copying and extracting components..."
-cp sources/LGPL/glibc/glibc_ports.tar.bz2 ./
-cp sources/LGPL/glibc/glibc.tar.bz2 ./
-tar -xf glibc.tar.bz2 || die "Cannot extract glibc.tar.bz2"
-tar -xf glibc_ports.tar.bz2 || die "Cannot extract glibc_ports.tar.bz2"
-ln -s ../glibc-ports-2.11-2010q1-mvl6/ glibc-2.11-2010q1-mvl6/ports
-
-echo "Patching glibc...Check for errors!!"
+echo "Patching glibc..."
 patch -p0 < ../0001-Seagate-Central-glibc-2.11.patch
 patch -p0 < ../0002-Seagate-Central-glibc-ports.patch
-
-
