@@ -50,7 +50,7 @@ than 5.12.x for some versions of GCC)
 * 4.9.4 (Failed - use the mauro-dellachiesa project linked above)
 
 Unless you have specific requirements, it is suggested to generate a 
-toolchain based on the latest stable versions of gcc, binutils and 
+toolchain based on the latest stable versions of GCC, binutils and 
 Linux.
 
 ## Prerequisites
@@ -106,13 +106,8 @@ the base working directory going forward.
     cd Seagate-Central-Toolchain
      
 ### Source code download
-#### Automated Download scripts
-There are two automatic download scripts included in this project
-that will retrieve and extract the versions of software tested using
-this procedure. It's only required to choose and execute one.
-
-##### Option 1 - download-sc-toolchain-src.sh (Recommended)
-The "download-sc-toolchain-src.sh" script will automatically download
+#### Automated Download script
+The "download-src-sc-toolchain.sh" script will automatically download
 the versions of source code tested with this procedure. Unless 
 otherwise noted these are the latest stable releases at the time
 of writing. Hopefully later versions, or at least those with the
@@ -123,36 +118,33 @@ same major version numbers, will still work with this guide.
 * linux-5.14 - https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.14.tar.xz
 * Seagate Central GPL - https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip
 
-     ./download-sc-toolchain-src.sh
+Execute this script as follows.
+
+     ./download-src-sc-toolchain.sh
      
-##### Option 2 - download-sc-toolchain-seagate-linux-src.sh (Rare)
-The "download-sc-toolchain-seagate-linux-src.sh" script will download
-and extract the same software versions as listed above however, it
-will not download Linux. Instead, it will setup the build to make 
-use of the original Seagate Central supplied Linux kernel headers 
-(2.6.35.13-cavm1.whitney-econa) that come in the Seagate Central GPL
-archive zip file.
+In the rare case that you wish to build the cross compiler using 
+the original Seagate Central supplied version of Linux kernel headers
+(2.6.35.13-cavm1.whitney-econa) then you can set the SEAGATE_LINUX
+environment variable before running the script to force it to use
+these old headers as follows.
 
-     ./download-sc-toolchain-seagate-linux-src.sh
+     SEAGATE_LINUX=1 ./download-src-sc-toolchain.sh
 
-Only use this option if you are building a very old version of 
-software that does not work well with modern Linux headers AND
-if you have no intention of upgrading your Seagate Central to a
-modern Linux kernel as per the 
+Only use this option if you are planning to use the toolchain to cross
+compile a very old version of software for the Seagate Central that does
+not work well with modern Linux headers AND if you have no intention of
+upgrading your Seagate Central to a modern Linux kernel as per the 
 **Seagate-Central-Slot-In-v5.x-Kernel** project at
 
 https://github.com/bertofurth/Seagate-Central-Slot-In-v5.x-Kernel 
-
-In my own experience, I have never found it necessary to use this
-option. It is only here for completeness sake.
 
 #### Optional - Manual download and extract
 Only perform this part of the procedure if you do not wish to use the
 above mentioned automatic download scripts and would prefer to manually
 download and extract the necessary source code archives. This might
 be the case if you want to create a toolchain based on an older 
-version of gcc in order to cross compile some particularly old software
-that does not build easily using modern versions of gcc.
+version of GCC in order to cross compile some particularly old software
+that does not build easily using modern versions of GCC.
 
 First, create an **src** subdirectory below the base working directory
 to store the source code. Change into this directory.
@@ -207,9 +199,9 @@ the relevant version as per the following example using Linux v5.14
      wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.14.tar.xz
      tar -xf linux-5.14.tar.xz
 
-**NOTE**. Some versions of gcc do not build properly with versions of
+**NOTE**. Some versions of GCC do not build properly with versions of
 Linux headers later than v5.12.x. See the Troubleshooting section for 
-more details.
+more details. 
 
 If you chose to use the Seagate supplied Linux headers (version 
 2.6.35.13-cavm1.whitney-econa) then copy the headers from the 
@@ -217,7 +209,7 @@ Seagate Central GPL archive and extract as follows.
 
     cp sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz ./linux-seagate.tar.gz
     tar -xf linux-seagate.tar.gz
-    mv git linux
+    mv git linux-seagate
     
 #### Binutils and GCC    
 Download binutils and GCC to the src directory and extract them. In this
@@ -229,7 +221,7 @@ binutils-2.37 and gcc-11.2.0.
     tar -xf binutils-2.37.tar.bz2
     tar -xf gcc-11.2.0.tar.xz
      
-GCC needs some extra components installed inside it's source tree in order
+GCC needs some extra components installed inside its source tree in order
 to be compiled. These can be automatically downloaded by changing into the
 extracted GCC source code subdirectory and running a script embedded in the
 GCC source code as follows. 
@@ -237,7 +229,7 @@ GCC source code as follows.
      cd gcc-11.2.0
      ./contrib/download_prerequisites
      
-Now that all the required source code is present we change directories back 
+Now that all the required source code is present, we change directories back 
 to the base working directory.
 
     cd ../..
@@ -245,12 +237,10 @@ to the base working directory.
 ### Optional - Customizing maketoolchain.sh
 At this point we may need to edit the **maketoolchain.sh** script in the 
 base working directory to set some parameters to guide the build process 
-however in most cases the default settings will be fine.
+however, in most cases the default settings will be fine.
 
 Working our way from the top of the script, the following parameters need to
-be set and checked. The most important are the first two. The comments in
-the script explain the meanings of each parameter. If in doubt just leave
-as they are.
+be set and checked. 
 
     # The target name and prefix that will be given
     # to the generated toolchain.
@@ -267,45 +257,8 @@ as they are.
     #
     TOP=$(pwd)/cross
 
-    # Number of threads to engage during build process.
-    # Normally set to less than or equal the number of
-    # available CPU cores. Use J=1 for troubleshooting
-    #
-    J=6
-
-    # *****************************************************
-    # *****************************************************
-    # It's not likely that any of the values below need to
-    # be changed.
-    # *****************************************************
-    # *****************************************************
-    
-    # Some build platforms are not correctly detected by
-    # the GLIBC build process. Particularly Raspberry Pi
-    #
-    # Uncomment this variable if building on a Raspberry
-    # Pi or if an error of the following type appears
-    #
-    # configure: error: cannot guess build type; you must specify one
-    #
-    #BUILD_PLATFORM_STRING=--build=arm-linux-gnu
-
-    # To stop temporary objects from being deleted as each
-    # stage finishes uncomment the following variable. This 
-    # adds up to 5GB to the disk space consumed by the build.
-    #KEEP_OLD_OBJ=1
-    
-    # To embed a "sysroot" directory in the toolchain uncomment
-    # the following variable. Embedding a sysroot directory makes
-    # cross compilation a little easier but it means the built
-    # toolchain is difficult to move to another directory after
-    # it's been generated and installed.
-    #WITH_SYSROOT=1
-         
-    # Uncomment this parameter if compiling gcc 5.x.x while
-    # building using gcc 11.x.x and above.
-    #CXXFLAGS="-std=gnu++14"
-
+There are a number of other debugging parameters within the script
+that can also be configured. Read the script itself for details.
 
 ## Building
 The build can be run by executing the maketoolchain.sh script
@@ -315,11 +268,12 @@ The build can be run by executing the maketoolchain.sh script
 The script will display a stage number, status and location of
 a log file as each stage of the process completes. 
 
-If a stage fails then the script will halt.
+If a stage fails, then the script will halt.
 
 The generated cross compilation tools will be located in the
 "cross" subdirectory by default and the PATH to the newly generated
-executable tools will be the cross/tools subdirectory.
+executable tools will be the cross/tools subdirectory of the base
+working directory. 
 
 ## Troubleshooting
 Most problems will be due to 
@@ -331,10 +285,14 @@ Most problems will be due to
 
 If a stage fails then refer to the log file displayed and try to
 correct the problem. It may be easier to read the log files if
-**J=1** is set in the maketoolchain.sh script. This way only one
-build thread will be active at a time and any errors will cause
-the build to terminate straight away instead of having to wait
-for other threads to finish.
+**J=1** is set before running the maketoolchain.sh script. For
+example
+
+     J=1 ./maketoolchain.sh
+     
+This way only one build thread will be active at a time and any errors
+will cause the build to terminate straight away instead of having to
+wait for other threads to finish.
 
 After fixing any problems the process can be resumed by rerunning
 the build script with an argument referring to the stage number
@@ -350,20 +308,27 @@ to restart the build process afresh. Do this by deleting the
 **cross** subdirectory and starting again. 
 
 ### Linux headers later than v5.12.x
-The following error may be seen when building some versions of gcc
-when using Linux headers from kernel versions later than v5.12.x.
+The following error may be seen when building some versions of GCC
+while using Linux headers from kernel versions later than v5.12.x.
 
     ..../gcc/libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cpp:134:10: fatal error: linux/cyclades.h: No such file or directory
        134 | #include <linux/cyclades.h>
 
 An obsolete header file (/include/linux/cyclades.h) has been 
-removed from Linux versions v5.13.x and later. This file was 
+removed from Linux versions v5.13 and later. This file was 
 required by some older versions of GCC in order to be built.
 Releases of GCC issued after June 2021 should resolve this issue.
 
 See
 
 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100379
+
+A workaround is to replace V5.14 in the Linux download step with
+version 5.12.x . For example
+
+    rm -rf linux-5.14      # Remove this version of linux
+    wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.12.19.tar.xz
+    tar -xf linux-5.12.19.tar.xz
 
 ### Building on Raspberry Pi
 Since the version of GLIBC being used is quite old, it does not
@@ -376,7 +341,8 @@ through the configure stage.
 
 Since this is the case, the "build" configure script parameter
 needs to be manually specified for GLIBC. This can be done by
-uncommenting the following variable in the maketoolchain.sh script.
+uncommenting the following variable in the maketoolchain.sh script
+or setting it on the command line.
 
     BUILD_PLATFORM_STRING=--build=arm-linux-gnu
 
@@ -394,9 +360,9 @@ in the make_gcc3.log during the make 3rd (final) GCC build stage
 ### GCC 5.x.x
 When building GCC versions 5.x.x while using GCC version 11.x.x
 and above the following line in the maketoolchain.sh script must be
-uncommented.
+uncommented or set on the command line.
 
-     export CXXFLAGS="-std=gnu++14"
+     CXXFLAGS="-std=gnu++14"
 
 If this modification is not made then an error similar to the
 following may appear in the logs during the make 1st GCC
@@ -409,7 +375,7 @@ Many warnings similar to the following may also appear
 
      warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
 
-### Building GCC requires GMP 4.2+, MPFR 3.1.0+ and MPC 0.8.0+.
+### GCC prerequisites
 If an error similar to the following appears during the GCC build
 phase then it means that the **contrib/download_prerequisites**
 script has not properly executed from within the gcc source code
@@ -419,4 +385,5 @@ sub directory.
      configure: error: Building GCC requires GMP 4.2+, MPFR 3.1.0+ and MPC 0.8.0+.
      
 This script should have been run automatically as part of
-maketoolchain.sh script but it may need to be run manually.
+both the "download-src-sc-toolchain.sh" and 
+"maketoolchain.sh" scripts but it may need to be run manually.
