@@ -25,12 +25,6 @@ TARGET=arm-sc-linux-gnueabi
 #
 TOP=$(pwd)/cross
 
-# Number of threads to engage during build process.
-# Normally set to less than or equal the number of
-# available CPU cores. Use J=1 for troubleshooting
-#
-J=6
-
 # *****************************************************
 # *****************************************************
 # It's not likely that any of the values below need to
@@ -38,30 +32,40 @@ J=6
 # *****************************************************
 # *****************************************************
 
+# Number of threads to engage during build process.
+#
+# If not explicitly set then we use the total
+# number of CPUs available according to "nproc".
+#
+# Use J=1 for troubleshooting
+#
+J=${J-$(nproc)}
+
 # Some build platforms are not correctly detected by
 # the GLIBC build process. Particularly Raspberry Pi
 #
 # Uncomment this variable if building on a Raspberry
-# Pi or if an error of the following type appears
+# Pi, other arm64 platform, or if an error of the
+# following type appears
 #
 # configure: error: cannot guess build type; you must specify one
 # 
 #BUILD_PLATFORM_STRING=--build=arm-linux-gnu
 
 # To stop temporary objects from being deleted as each
-# stage finishes uncomment the following variable. This 
-# adds up to 5GB to the disk space consumed by the build.
+# stage finishes uncomment or set the following variable.
+# This adds up to 5GB to the disk space consumed by the build.
 #KEEP_OLD_OBJ=1
     
 # To embed a "sysroot" directory in the toolchain uncomment
-# the following variable. Embedding a sysroot directory makes
-# cross compilation a little easier but it means the built
+# or set the following variable. Embedding a sysroot directory
+# makes cross compilation a little easier but it means the built
 # toolchain is difficult to move to another directory after
 # it's been generated and installed.
 #WITH_SYSROOT=1
          
-# Uncomment this parameter if compiling gcc 5.x.x while
-# building using gcc 11.x.x and above.
+# Uncomment or set this parameter if compiling gcc 5.x.x
+# while building using gcc 11.x.x and above.
 #CXXFLAGS="-std=gnu++14"
     
 
@@ -170,6 +174,7 @@ echo "Building $TARGET toolchain in $TOOLS"
 echo "Detected $binutilsv $gccv"
 echo "Using linux headers in $SRC/$linuxv"
 echo "sysroot is $SYSROOT"
+echo "Threads in use : j=$J"
 if [[ $WITH_SYSROOT -eq 1 ]]; then
     echo "Embedding sysroot $SYSROOT in generated toolset "
 else
