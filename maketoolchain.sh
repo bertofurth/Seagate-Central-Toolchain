@@ -45,8 +45,8 @@ J=${J-$(nproc)}
 # the GLIBC build process. Particularly Raspberry Pi
 #
 # Uncomment this variable if building on a Raspberry
-# Pi, other arm64 platform, or if an error of the
-# following type appears
+# Pi, other aarch64 / arm64 platform, or if an error
+# of the following type appears
 #
 # configure: error: cannot guess build type; you must specify one
 # 
