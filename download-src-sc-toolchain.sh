@@ -85,7 +85,7 @@ if [ ! -z ${SEAGATE_LINUX+x} ]; then
     echo "Extracting Seagate Linux"
     unzip -q "$(basename ${scgplzip})" \
 	  sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz \
-	  die "Cannot extract Seagate Linux from $(basename ${scgplzip})"
+	|| die "Cannot extract Seagate Linux from $(basename ${scgplzip})"
     cp sources/GPL/linux/git_.home.cirrus.cirrus_repos.linux_6065f48ac9974b200566c51d58bced9c639a2aad.tar.gz ./linux-seagate.tar.gz
     tar -xf linux-seagate.tar.gz || die "Cannot extract linux-seagate.tar.gz"
     mv git linux-seagate
