@@ -262,7 +262,9 @@ if [[ $skip_stage -eq 0 ]]; then
     $SRC/$binutilsv/configure --target=$TARGET --prefix=$TOOLS \
                               --disable-multilib \
 			      $WITH_SYSROOT_OPTION \
-			      --disable-werror &> $TOP/config_binutils.log
+			      --disable-werror \
+			      --with-arch=armv6 --with-fpu=vfp --with-float=softfp \
+	&> $TOP/config_binutils.log
     
     checkerr $? "config binutils" $TOP/config_binutils.log
     make -j$J &> $TOP/make_binutils.log
@@ -305,6 +307,7 @@ if [[ $skip_stage -eq 0 ]]; then
 	--disable-libvtv \
 	--disable-libstdcxx \
 	--enable-languages=c,c++ \
+	--with-arch=armv6 --with-fpu=vfp --with-float=softfp \
 	--verbose &> $TOP/config_gcc1.log
     
     checkerr $? "config 1st GCC" $TOP/config_gcc1.log
@@ -346,6 +349,7 @@ if [[ $skip_stage -eq 0 ]]; then
 				       $BUILD_PLATFORM_STRING \
 				       --host=$TARGET \
 				       --disable-profile --without-gd --without-cvs --enable-add-ons \
+				       --with-arch=armv6 --with-fpu=vfp --with-float=softfp \
 	&> $TOP/config_eglibc1.log
 
 
@@ -379,6 +383,7 @@ if [[ $skip_stage -eq 0 ]]; then
 	--disable-libquadmath \
 	--disable-libssp --disable-libgomp  \
 	--enable-languages=c \
+	--with-arch=armv6 --with-fpu=vfp --with-float=softfp \
 	&> $TOP/config_gcc2.log
     checkerr $? "config 2nd GCC" $TOP/config_gcc2.log
 
@@ -408,6 +413,7 @@ if [[ $skip_stage -eq 0 ]]; then
 				       $BUILD_PLATFORM_STRING \
 				       --host=$TARGET \
 				       --disable-profile --without-gd --without-cvs --enable-add-ons \
+				       --with-arch=armv6 --with-fpu=vfp --with-float=softfp \
 	&> $TOP/config_eglibc2.log 
 
 
@@ -445,10 +451,9 @@ if [[ $skip_stage -eq 0 ]]; then
 	--enable-languages=c,c++ \
 	$WITH_SYSROOT_OPTION \
 	--with-build-sysroot=$SYSROOT \
+	--with-arch=armv6 --with-fpu=vfp --with-float=softfp \
 	&> $TOP/config_gcc3.log
 
-# 	--with-sysroot=$SYSROOT 
-    
     checkerr $? "config 3rd (final) GCC" $TOP/config_gcc3.log
 
     make -j$J &> $TOP/make_gcc3.log
