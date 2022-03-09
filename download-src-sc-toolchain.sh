@@ -12,7 +12,7 @@
 
 gcc='http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz'
 binutils='http://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.xz'
-linux='https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.14.tar.xz'
+linux='https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.16.12.tar.xz'
 scgplzip='https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip'
 
 echo_archives() {
