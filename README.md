@@ -35,8 +35,8 @@ platforms
 * Debian 10 (Buster) on x86  (GCC 8.3.0, make 4.2.1)
 
 The procedure has been tested building the following versions of
-GCC in conjunction with binutils v2.37 (latest at time of writing) and
-both Linux 5.14 (latest) and the Seagate supplied Linux headers (2.6.35)
+GCC in conjunction with binutils v2.38 (latest at time of writing) and
+both Linux 5.16.12 (latest) and the Seagate supplied Linux headers (2.6.35)
 (See note in Troubleshooting section in regards to using Linux later
 than 5.12.x for some versions of GCC)
 
@@ -114,8 +114,8 @@ of writing. Hopefully later versions, or at least those with the
 same major version numbers, will still work with this guide.
 
 * gcc-11.2.0 - http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
-* binutils-2.37 - http://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.xz
-* linux-5.14 - https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.14.tar.xz
+* binutils-2.38 - http://mirrors.kernel.org/gnu/binutils/binutils-2.38.tar.xz
+* linux-5.16.12 - https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.16.12.tar.xz
 * Seagate Central GPL - https://www.seagate.com/files/www-content/support-content/external-products/seagate-central/_shared/downloads/seagate-central-firmware-gpl-source-code.zip
 
 Execute this script as follows.
@@ -194,10 +194,10 @@ compatible with modern Linux headers then you can use Seagate supplied
 headers.
 
 If you chose to use recent headers then download and extract
-the relevant version as per the following example using Linux v5.14
+the relevant version as per the following example using Linux v5.16.12
 
-     wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.14.tar.xz
-     tar -xf linux-5.14.tar.xz
+     wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.16.12.tar.xz
+     tar -xf linux-5.16.12.tar.xz
 
 **NOTE**. Some versions of GCC do not build properly with versions of
 Linux headers later than v5.12.x. See the Troubleshooting section for 
@@ -214,11 +214,11 @@ Seagate Central GPL archive and extract as follows.
 #### Binutils and GCC    
 Download binutils and GCC to the src directory and extract them. In this
 example we use the latest stable versions at the time of writing,
-binutils-2.37 and gcc-11.2.0.
+binutils-2.38 and gcc-11.2.0.
     
-    wget http://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.bz2
+    wget http://mirrors.kernel.org/gnu/binutils/binutils-2.38.tar.bz2
     wget http://mirrors.kernel.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
-    tar -xf binutils-2.37.tar.bz2
+    tar -xf binutils-2.38.tar.bz2
     tar -xf gcc-11.2.0.tar.xz
      
 GCC needs some extra components installed inside its source tree in order
@@ -323,8 +323,8 @@ See
 
 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100379
 
-A workaround is to replace V5.14 in the Linux download step with
-version 5.12.x . For example
+One workaround is to replace V5.14 in the Linux download step with
+version 5.12.x which should suffice in most cases. For example
 
     rm -rf linux-5.14      # Remove this version of linux
     wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.12.19.tar.xz
