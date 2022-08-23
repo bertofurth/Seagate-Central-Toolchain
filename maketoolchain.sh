@@ -260,7 +260,6 @@ if [[ $skip_stage -eq 0 ]]; then
     cd $OBJ/binutils
 
     $SRC/$binutilsv/configure --target=$TARGET --prefix=$TOOLS \
-                              --disable-multilib \
 			      $WITH_SYSROOT_OPTION \
 			      --disable-werror \
 			      --with-arch=armv6 --with-fpu=vfp --with-float=softfp \
