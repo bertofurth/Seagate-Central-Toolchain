@@ -62,7 +62,7 @@ J=${J-$(nproc)}
 # makes cross compilation a little easier but it means the built
 # toolchain is difficult to move to another directory after
 # it's been generated and installed.
-#WITH_SYSROOT=1
+WITH_SYSROOT=1
          
 # Uncomment or set this parameter if compiling gcc 5.x.x
 # while building using gcc 11.x.x and above.
