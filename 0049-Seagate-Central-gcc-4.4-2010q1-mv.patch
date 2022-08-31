@@ -1,0 +1,31 @@
+--- ./gcc-4.4-2010q1-mv/gcc/toplev.h.orig	2022-08-31 12:02:54.882274048 +1000
++++ ./gcc-4.4-2010q1-mv/gcc/toplev.h	2022-08-31 12:04:06.598885875 +1000
+@@ -167,7 +167,7 @@
+ /* Return true iff flags are set as if -ffast-math.  */
+ extern bool fast_math_flags_set_p	(void);
+ extern bool fast_math_flags_struct_set_p (struct cl_optimization *);
+-
++#if 0  /* Get rid of exact_log2 and floor_log2 definitions */
+ /* Return log2, or -1 if not exact.  */
+ extern int exact_log2                  (unsigned HOST_WIDE_INT);
+ 
+@@ -199,7 +199,7 @@
+   return x == (x & -x) && x ? (int) CTZ_HWI (x) : -1;
+ }
+ #endif /* GCC_VERSION >= 3004 */
+-
++#endif /* Get rid of exact_log2 and floor_log2 definitions */
+ /* Functions used to get and set GCC's notion of in what directory
+    compilation was started.  */
+ 
+--- ./gcc-4.4-2010q1-mv/gcc/Makefile.in.orig	2022-08-31 12:01:37.089610380 +1000
++++ ./gcc-4.4-2010q1-mv/gcc/Makefile.in	2022-08-31 14:17:40.501489400 +1000
+@@ -4135,7 +4135,7 @@
+ # Install the driver last so that the window when things are
+ # broken is small.
+ install: install-common $(INSTALL_HEADERS) \
+-    install-cpp install-man install-info install-html install-pdf \
++    install-cpp \
+     install-@POSUB@ install-driver
+ 
+ # Handle cpp installation.
