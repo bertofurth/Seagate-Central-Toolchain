@@ -134,9 +134,9 @@ Only use this option if you are planning to use the toolchain to cross
 compile a very old version of software for the Seagate Central that does
 not work well with modern Linux headers AND if you have no intention of
 upgrading your Seagate Central to a modern Linux kernel as per the 
-**Seagate-Central-Slot-In-v5.x-Kernel** project at
+**Seagate-Central-Modern-Slot-In-Kernel** project at
 
-https://github.com/bertofurth/Seagate-Central-Slot-In-v5.x-Kernel 
+https://github.com/bertofurth/Seagate-Central-Modern-Slot-In-Kernel 
 
 #### Optional - Manual download and extract
 Only perform this part of the procedure if you do not wish to use the
