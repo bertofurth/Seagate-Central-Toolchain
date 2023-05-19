@@ -7,8 +7,16 @@
 # argument number to begin the process at a stage other
 # than the start.
 
+# Based on: Cross-Compiling EGLIBC by Jim Blandy <jimb@codesourcery.com>"
+# in $SRC/$GLIBC/EGLIBC.cross-building"
+# https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain
+
+# *****************************************************
+# *****************************************************
 # Edit the following variables to suit your build
 # requirements.
+# *****************************************************
+# *****************************************************
 
 # The target name and prefix that will be given
 # to the generated toolchain.
@@ -184,10 +192,6 @@ if [[ $KEEP_OLD_OBJ -eq 1 ]]; then
     echo "WARNING - Keeping old objects!! May consume 5GB extra disk space!!"
 fi
 
-echo
-echo "Reference: Cross-Compiling EGLIBC by Jim Blandy <jimb@codesourcery.com>"
-echo "           in $SRC/$GLIBC/EGLIBC.cross-building"
-echo "Based on : https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain"
 echo
 # Printing free space on the device because this process takes up
 # so much disk space.
