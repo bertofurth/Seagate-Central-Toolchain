@@ -43,7 +43,7 @@ diff -ruN glibc-2.11-2010q1-mvl6.orig/posix/Makefile glibc-2.11-2010q1-mvl6/posi
  	while read spec; do \
  	  ln -f $< $@/$$spec.new || $(INSTALL_PROGRAM) $< $@/$$spec.new; \
 -	  mv -f $@/$$spec.new $@/$$spec; \
-+	  mv -n $@/$$spec.new $@/$$spec; \
++	  mv --update=none $@/$$spec.new $@/$$spec; \
  	done < $(objpfx)getconf.speclist
  
  # eglibc: If we are cross-compiling, build cross-getconf utility and use it
