@@ -6,10 +6,10 @@
 # using open source code. Supply an optional "stage-num"
 # argument number to begin the process at a stage other
 # than the start.
-
+#
 # Based on: Cross-Compiling EGLIBC by Jim Blandy <jimb@codesourcery.com>"
 # in $SRC/$GLIBC/EGLIBC.cross-building"
-# https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain
+# and https://github.com/mauro-dellachiesa/seagate-nas-central-toolchain
 
 # *****************************************************
 # *****************************************************
@@ -32,6 +32,9 @@ TARGET=arm-sc-linux-gnueabi
 # this something like cross-X.Y.Z for each version
 #
 TOP=$(pwd)/cross
+
+# Specify which version of make to use. Tested version 4.3
+MAKE=${MAKE-make}
 
 # *****************************************************
 # *****************************************************
@@ -177,12 +180,13 @@ if [ ! -d $SRC/$GLIBC/ports ]; then
     exit 1
 fi
 
-echo
 echo "Building $TARGET toolchain in $TOOLS"
 echo "Detected $binutilsv $gccv"
 echo "Using linux headers in $SRC/$linuxv"
 echo "sysroot is $SYSROOT"
 echo "Threads in use : j=$J"
+echo "Using make at $(which $MAKE)"
+
 if [[ $WITH_SYSROOT -eq 1 ]]; then
     echo "Embedding sysroot $SYSROOT in generated toolset "
 else
@@ -191,8 +195,8 @@ fi
 if [[ $KEEP_OLD_OBJ -eq 1 ]]; then
     echo "WARNING - Keeping old objects!! May consume 5GB extra disk space!!"
 fi
-
 echo
+
 # Printing free space on the device because this process takes up
 # so much disk space.
 df -h $OBJ
@@ -270,10 +274,10 @@ if [[ $skip_stage -eq 0 ]]; then
 	&> $TOP/config_binutils.log
     
     checkerr $? "config binutils" $TOP/config_binutils.log
-    make -j$J &> $TOP/make_binutils.log
+    $MAKE -j$J &> $TOP/make_binutils.log
     checkerr $? "make binutils" $TOP/make_binutils.log
 
-    make install &> $TOP/make_binutils_install.log
+    $MAKE install &> $TOP/make_binutils_install.log
     checkerr $? "install binutils" $TOP/make_binutils_install.log
     clean_obj "$OBJ/binutils"
 fi
@@ -314,11 +318,11 @@ if [[ $skip_stage -eq 0 ]]; then
 	--verbose &> $TOP/config_gcc1.log
     
     checkerr $? "config 1st GCC" $TOP/config_gcc1.log
-    make -j$J &> $TOP/make_gcc1.log
+    $MAKE -j$J &> $TOP/make_gcc1.log
     
     checkerr $? "make 1st GCC" $TOP/make_gcc1.log
 
-    make install &> $TOP/make_gcc1_install.log
+    $MAKE install &> $TOP/make_gcc1_install.log
     checkerr $? "install 1st GCC" $TOP/make_gcc1_install.log
     clean_obj "$OBJ/gcc1"
 fi
@@ -328,7 +332,7 @@ if [[ $skip_stage -eq 0 ]]; then
     ### LINUX KERNEL HEADERS
     cp -r $SRC/$linuxv $OBJ/linux
     cd $OBJ/linux
-    make headers_install ARCH=$linux_arch CROSS_COMPILE=$TARGET- \
+    $MAKE headers_install ARCH=$linux_arch CROSS_COMPILE=$TARGET- \
 	 INSTALL_HDR_PATH=$SYSROOT/usr &> $TOP/make_linux_hdr_install.log
     checkerr $? "install Linux headers" $TOP/make_linux_hdr_install.log
     clean_obj "$OBJ/linux"
@@ -359,12 +363,12 @@ if [[ $skip_stage -eq 0 ]]; then
 
     checkerr $? "config 1st GLIBC" $TOP/config_eglibc1.log
 
-    make -j$J cross-compiling=yes install_root=$SYSROOT install-headers \
+    $MAKE -j1 cross-compiling=yes install_root=$SYSROOT install-headers \
 	 install-bootstrap-headers=yes &> $TOP/make_eglibc_hdr1.log
     checkerr $? "make 1st GLIBC" $TOP/make_eglibc_hdr1.log
 
     mkdir -p $SYSROOT/usr/lib
-    make csu/subdir_lib &> $TOP/make_eglibc_csu1.log
+    $MAKE csu/subdir_lib &> $TOP/make_eglibc_csu1.log
     checkerr $? "make 1st GLIBC csu" $TOP/make_eglibc_csu1.log
 
     cp csu/crt1.o csu/crti.o csu/crtn.o $SYSROOT/usr/lib
@@ -390,10 +394,10 @@ if [[ $skip_stage -eq 0 ]]; then
 	&> $TOP/config_gcc2.log
     checkerr $? "config 2nd GCC" $TOP/config_gcc2.log
 
-    make -j$J &> $TOP/make_gcc2.log
+    $MAKE -j$J &> $TOP/make_gcc2.log
     checkerr $? "make 2nd GCC" $TOP/make_gcc2.log
 
-    make install &> $TOP/make_gcc2_install.log
+    $MAKE install &> $TOP/make_gcc2_install.log
     checkerr $? "install 2nd GCC" $TOP/make_gcc2_install.log
     clean_obj "$OBJ/gcc2"
 fi
@@ -423,12 +427,12 @@ if [[ $skip_stage -eq 0 ]]; then
 
     checkerr $? "config complete GLIBC" $TOP/config_eglibc2.log
     
-    make -j$J &> $TOP/make_eglibc2.log
+    $MAKE -j$J &> $TOP/make_eglibc2.log
     checkerr $? "make complete GLIBC" $TOP/make_eglibc2.log
 
     # last line of cross/obj/eglibc/posix/getconf.speclist has space instead of newline?
 
-    make install_root=$SYSROOT install &> $TOP/make_eglibc2_install.log
+    $MAKE install_root=$SYSROOT install &> $TOP/make_eglibc2_install.log
     checkerr $? "install complete GLIBC" $TOP/make_eglibc2_install.log 1
     clean_obj "$OBJ/eglibc"
 fi
@@ -459,10 +463,10 @@ if [[ $skip_stage -eq 0 ]]; then
 
     checkerr $? "config 3rd (final) GCC" $TOP/config_gcc3.log
 
-    make -j$J &> $TOP/make_gcc3.log
+    $MAKE -j$J &> $TOP/make_gcc3.log
     checkerr $? "make 3rd (final) GCC" $TOP/make_gcc3.log
 
-    make install &> $TOP/make_gcc3_install.log
+    $MAKE install &> $TOP/make_gcc3_install.log
     checkerr $? "install 3rd (final) GCC" $TOP/make_gcc3_install.log
     clean_obj "$OBJ/gcc3"
 fi
